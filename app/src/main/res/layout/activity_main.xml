@@ -22,10 +22,10 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            app:theme="@style/ToolBarStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary">
+            android:background="@color/colorPrimary"
+            app:theme="@style/ToolBarStyle">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -51,8 +51,19 @@
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@mipmap/bg_fly_home_white"
         android:visibility="visible"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/skin_colorAccent_indigo"
         app:rippleColor="@color/colorPrimaryDark" />
 
+    <com.lifehelper.ui.customwidget.MapStateView
+        android:id="@+id/msv_map_state_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/activity_vertical_margin_big"
+        app:mapBackgroudColor="@color/skin_dialog_white"
+        app:mapStrokeColor="@color/common_line"
+        app:mapStrokeWidth="1px"
+        app:normalStateIcon="@mipmap/bg_location"
+        app:stereoStateIcon="@mipmap/bg_mylocation" />
 
 </android.support.design.widget.CoordinatorLayout>

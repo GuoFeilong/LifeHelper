@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MapStateView">
+        <attr name="mapBackgroudColor" format="color" />
+        <attr name="mapStrokeColor" format="color" />
+        <attr name="mapStrokeWidth" format="dimension" />
+        <attr name="normalStateIcon" format="reference" />
+        <attr name="stereoStateIcon" format="reference" />
+        <attr name="noCurrentLocationIcon" format="reference"/>
+        <attr name="mapText" format="string" />
+        <attr name="mapTextColor" format="color" />
+        <attr name="mapTextSize" format="dimension" />
+    </declare-styleable>
+
+</resources>

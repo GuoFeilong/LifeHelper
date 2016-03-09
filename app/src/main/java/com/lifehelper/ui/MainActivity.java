@@ -2,10 +2,11 @@ package com.lifehelper.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -53,6 +54,8 @@ import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
 import com.lifehelper.tools.Logger;
 import com.lifehelper.tools.T;
+import com.lifehelper.tools.Tools;
+import com.lifehelper.ui.customwidget.MapStateView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +74,8 @@ public class MainActivity extends BaseActivity {
     FloatingActionButton mFlyHome;
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @Bind(R.id.msv_map_state_view)
+    MapStateView mMapStateView;
     private ActionBarDrawerToggle mToggle;
 
 
@@ -148,6 +153,23 @@ public class MainActivity extends BaseActivity {
     protected void initEvent() {
         toggleAndDrawer();
         initBaiduClient();
+        mMapStateView.setmOnMapStateViewClickListener(new MapStateView.OnMapStateViewClickListener() {
+            @Override
+            public void mapStateViewClick(int currentState) {
+                if (currentState == MapStateView.MAP_STATE.NORMAL) {
+                    mMapStateView.setmCurrentState(MapStateView.MAP_STATE.STEREO);
+                } else {
+                    mMapStateView.setmCurrentState(MapStateView.MAP_STATE.NORMAL);
+                }
+                T.show(MainActivity.this, "状态>>currentState" + currentState, 0);
+            }
+        });
+        mMapStateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                T.show(MainActivity.this, "点击", 0);
+            }
+        });
     }
 
     /**
@@ -253,14 +275,23 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPoiSearch.destroy();
-        mMapView.onDestroy();
-        mSuggestionSearch.destroy();
-        mLocationClient.unRegisterLocationListener(mBdLocationListener);
+        // Variables may be null
+        if (mPoiSearch != null) {
+            mPoiSearch.destroy();
+        }
+        if (mMapView != null) {
+            mMapView.onDestroy();
+        }
+        if (mSuggestionSearch != null) {
+            mSuggestionSearch.destroy();
+        }
+        if (mLocationClient != null) {
+            mLocationClient.unRegisterLocationListener(mBdLocationListener);
+        }
     }
 
     /**
-     * 初始化定位
+     * init location
      */
     private void initLocation(LocationClient locationClient) {
         LocationClientOption option = new LocationClientOption();
@@ -280,11 +311,13 @@ public class MainActivity extends BaseActivity {
         locationClient.setLocOption(option);
     }
 
+
     class MyLocationListener implements BDLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-            //Receive Location
+            //*****************************Below is location more information*************************
+
             StringBuffer sb = new StringBuffer(256);
             sb.append("time : ");
             sb.append(location.getTime());
@@ -342,7 +375,9 @@ public class MainActivity extends BaseActivity {
                     sb.append(p.getId() + " " + p.getName() + " " + p.getRank());
                 }
             }
-            Log.i("BaiduLocationApiDem", sb.toString());
+            Logger.i("BaiduLocationApiDem", sb.toString());
+
+            //*****************************Above is location more information**************************************
 
 
             if (!isFirstEnter) {
@@ -361,10 +396,6 @@ public class MainActivity extends BaseActivity {
                 mBaiduMap.setMyLocationConfigeration(config);
 
 
-//            MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(15);
-//            mBaiduMap.animateMapStatus(u);
-
-
                 //设定中心点坐标
                 LatLng cenpt = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -379,9 +410,9 @@ public class MainActivity extends BaseActivity {
                 mBaiduMap.animateMapStatus(mMapStatusUpdate);
                 isFirstEnter = true;
 
-                testPOI(cenpt);
-                testBusLine(cenpt);
-                testRoutePlan(cenpt);
+//                testPOI(cenpt);
+//                testBusLine(cenpt);
+//                testRoutePlan(cenpt);
 
             }
 
@@ -570,4 +601,27 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            Tools.doublePressExit(this);
+        }
+
+    }
+
+
+    /**
+     * the method for drawer state
+     */
+    private void drawerOpenOrClose() {
+        if (mDrawerLayout != null) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        }
+    }
 }
