@@ -1,7 +1,10 @@
 package com.lifehelper.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,20 +48,38 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
-import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.R;
+import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
-import com.lifehelper.app.LifeApplication;
 import com.lifehelper.tools.Logger;
-import com.squareup.leakcanary.RefWatcher;
+import com.lifehelper.tools.T;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends BaseActivity {
+    @Bind(R.id.bmapView)
+    MapView mMapView;
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+    @Bind(R.id.fab)
+    FloatingActionButton mFlyHome;
+    @Bind(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
+
+
+    @OnClick(R.id.fab)
+    void flyHomeAction() {
+        T.show(this, "测试", 0);
+    }
+
     private BaiduMap mBaiduMap;
-    private MapView mMapView;
     private LocationClient mLocationClient;
     private BDLocationListener mBdLocationListener;
     private boolean isFirstEnter;
@@ -92,11 +113,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
 
-        /**
-         * 检查内存泄露
-         */
-        RefWatcher refWatcher = LifeApplication.getRefWatcher(this);
-        refWatcher.watch(this);
+        initData();
+        initView();
+        initEvent();
+
 
         mLocationClient = new LocationClient(getApplicationContext());
         mBdLocationListener = new MyLocationListener();
@@ -111,6 +131,33 @@ public class MainActivity extends AppCompatActivity {
         mBaiduMap.setMyLocationEnabled(true);
         mLocationClient.start();
 
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void initView() {
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void initEvent() {
+        toggleAndDrawer();
+    }
+
+    /**
+     * make drawer link toolbar
+     */
+    private void toggleAndDrawer() {
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.skin_dialog_white));
+        setSupportActionBar(mToolbar);
+        mToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.setDrawerListener(mToggle);
+        mToggle.syncState();
     }
 
     /**
@@ -407,7 +454,6 @@ public class MainActivity extends AppCompatActivity {
                     List<PoiInfo> poiInfos = result.getAllPoi();
 
                     LatLng temp = poiInfos.get(0).location;
-
 
 
                     routePlanSearch.transitSearch((new TransitRoutePlanOption())
