@@ -116,21 +116,22 @@ public class MainActivity extends BaseActivity {
         initData();
         initView();
         initEvent();
+    }
 
-
-        mLocationClient = new LocationClient(getApplicationContext());
-        mBdLocationListener = new MyLocationListener();
-        mMapView = (MapView) findViewById(R.id.bmapView);
+    /**
+     * init Baidu location and Baidu map
+     */
+    private void initBaiduClient() {
         mBaiduMap = mMapView.getMap();
-
+        mBaiduMap.setMyLocationEnabled(true);
         mMapView.showZoomControls(false);
         mMapView.showScaleControl(false);
 
-        initLocation();
+        mLocationClient = new LocationClient(getApplicationContext());
+        mBdLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mBdLocationListener);
-        mBaiduMap.setMyLocationEnabled(true);
+        initLocation(mLocationClient);
         mLocationClient.start();
-
     }
 
     @Override
@@ -146,13 +147,13 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initEvent() {
         toggleAndDrawer();
+        initBaiduClient();
     }
 
     /**
      * make drawer link toolbar
      */
     private void toggleAndDrawer() {
-        mToolbar.setTitleTextColor(getResources().getColor(R.color.skin_dialog_white));
         setSupportActionBar(mToolbar);
         mToggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -261,7 +262,7 @@ public class MainActivity extends BaseActivity {
     /**
      * 初始化定位
      */
-    private void initLocation() {
+    private void initLocation(LocationClient locationClient) {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
@@ -276,7 +277,7 @@ public class MainActivity extends BaseActivity {
         option.setIgnoreKillProcess(false);//可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
         option.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
         option.setEnableSimulateGps(false);//可选，默认false，设置是否需要过滤gps仿真结果，默认需要
-        mLocationClient.setLocOption(option);
+        locationClient.setLocOption(option);
     }
 
     class MyLocationListener implements BDLocationListener {
