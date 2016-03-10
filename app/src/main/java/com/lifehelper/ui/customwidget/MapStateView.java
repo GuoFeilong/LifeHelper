@@ -47,6 +47,7 @@ public class MapStateView extends View {
     private Bitmap mStereoStateIconBitMap;
     private Bitmap mNoCurrentLocationIconBitMap;
     private int mCurrentState = MAP_STATE.NORMAL;
+    private boolean isFirst;
 
     public interface OnMapStateViewClickListener {
         void mapStateViewClick(int currentState);
@@ -201,11 +202,22 @@ public class MapStateView extends View {
         super.onDraw(canvas);
         drawMapStroke(canvas, mStrokeRectF);
         drawMapBackgroud(canvas, mBackgroudRectF);
-        drawMapNormalIcon(canvas);
+        switch (mCurrentState) {
+            case MAP_STATE.NORMAL:
+                drawMapIcon(canvas, mNormalStateIconBitMap);
+                break;
+            case MAP_STATE.STEREO:
+                drawMapIcon(canvas, mStereoStateIconBitMap);
+                break;
+            case MAP_STATE.NO_CURRENT_LOCATION:
+                drawMapIcon(canvas, mNoCurrentLocationIconBitMap);
+                break;
+        }
+
     }
 
-    private void drawMapNormalIcon(Canvas canvas) {
-        canvas.drawBitmap(mNormalStateIconBitMap, (mWidth - mNormalStateIconBitMap.getWidth()) / 2, (mHeight - mNormalStateIconBitMap.getHeight()) / 2, mBackgroudPaint);
+    private void drawMapIcon(Canvas canvas, Bitmap bitmapIcon) {
+        canvas.drawBitmap(bitmapIcon, (mWidth - bitmapIcon.getWidth()) / 2, (mHeight - bitmapIcon.getHeight()) / 2, mBackgroudPaint);
     }
 
     private void drawMapBackgroud(Canvas canvas, RectF backgroudRectF) {
@@ -250,14 +262,8 @@ public class MapStateView extends View {
 
     // TODO: 16/3/9 different state different icon
     private void postInvalidateIcon(int currentState) {
-        switch (currentState) {
-            case MAP_STATE.NORMAL:
-                break;
-            case MAP_STATE.STEREO:
-                break;
-            case MAP_STATE.NO_CURRENT_LOCATION:
-                break;
-        }
+        mCurrentState = currentState;
+        postInvalidate();
     }
 
 
