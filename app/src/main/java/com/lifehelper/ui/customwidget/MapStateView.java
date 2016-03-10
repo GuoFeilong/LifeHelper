@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,6 +25,8 @@ public class MapStateView extends View {
     private static final float DE_WIDTH = 35.f;
     private static final float DE_HEIGHT = 35.f;
     private static final float DE_RADIO = 3.f;
+    private static final float ZOOM_P = 1.5f;
+
     private int mBackgroudColor;
     private int strokeColor;
     private int strokeWidth;
@@ -116,15 +119,40 @@ public class MapStateView extends View {
         if (normalStateIcon != null) {
             bitmapDrawable = (BitmapDrawable) normalStateIcon;
             mNormalStateIconBitMap = bitmapDrawable.getBitmap();
+            mNormalStateIconBitMap = zoomImage(mNormalStateIconBitMap, mNormalStateIconBitMap.getWidth() * ZOOM_P, mNormalStateIconBitMap.getHeight() * ZOOM_P);
         }
         if (stereoStateIcon != null) {
             bitmapDrawable = (BitmapDrawable) stereoStateIcon;
             mStereoStateIconBitMap = bitmapDrawable.getBitmap();
+            mStereoStateIconBitMap = zoomImage(mStereoStateIconBitMap, mStereoStateIconBitMap.getWidth() * ZOOM_P, mStereoStateIconBitMap.getHeight() * ZOOM_P);
+
         }
         if (noCurrentLocationIcon != null) {
             bitmapDrawable = (BitmapDrawable) noCurrentLocationIcon;
             mNoCurrentLocationIconBitMap = bitmapDrawable.getBitmap();
+            mNoCurrentLocationIconBitMap = zoomImage(mNoCurrentLocationIconBitMap, mNoCurrentLocationIconBitMap.getWidth() * ZOOM_P, mNoCurrentLocationIconBitMap.getHeight() * ZOOM_P);
+
         }
+    }
+
+
+    /***
+     * zoom bitmap
+     *
+     * @param bgimage
+     * @param newWidth
+     * @param newHeight
+     * @return
+     */
+    public static Bitmap zoomImage(Bitmap bgimage, double newWidth, double newHeight) {
+        float width = bgimage.getWidth();
+        float height = bgimage.getHeight();
+        Matrix matrix = new Matrix();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap bitmap = Bitmap.createBitmap(bgimage, 0, 0, (int) width, (int) height, matrix, true);
+        return bitmap;
     }
 
     /**
