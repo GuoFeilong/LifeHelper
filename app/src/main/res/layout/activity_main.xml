@@ -65,6 +65,7 @@
         app:mapBackgroudColor="@color/skin_dialog_white"
         app:mapStrokeColor="@color/common_line"
         app:mapStrokeWidth="1px"
+        app:noCurrentLocationIcon="@mipmap/bg_error_location"
         app:normalStateIcon="@mipmap/bg_location"
         app:stereoStateIcon="@mipmap/bg_mylocation" />
 

@@ -69,7 +69,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusChangeListener {
     @Bind(R.id.bmapView)
     MapView mMapView;
     @Bind(R.id.toolbar)
@@ -361,6 +361,9 @@ public class MainActivity extends BaseActivity {
         if (mOrientationListener != null) {
             sensorManager.unregisterListener(mOrientationListener);
         }
+        if (mBaiduMap != null) {
+            mBaiduMap.setMyLocationEnabled(false);
+        }
     }
 
     /**
@@ -382,6 +385,21 @@ public class MainActivity extends BaseActivity {
         option.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
         option.setEnableSimulateGps(false);//可选，默认false，设置是否需要过滤gps仿真结果，默认需要
         locationClient.setLocOption(option);
+    }
+
+    @Override
+    public void onMapStatusChangeStart(MapStatus mapStatus) {
+        mMapStateView.setmCurrentState(MapStateView.MAP_STATE.NO_CURRENT_LOCATION);
+    }
+
+    @Override
+    public void onMapStatusChange(MapStatus mapStatus) {
+
+    }
+
+    @Override
+    public void onMapStatusChangeFinish(MapStatus mapStatus) {
+
     }
 
 
@@ -486,6 +504,7 @@ public class MainActivity extends BaseActivity {
                 MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
                 //改变地图状态
                 mBaiduMap.animateMapStatus(mMapStatusUpdate);
+                mBaiduMap.setOnMapStatusChangeListener(MainActivity.this);
                 isFirstEnter = true;
 
 //                testPOI(cenpt);
