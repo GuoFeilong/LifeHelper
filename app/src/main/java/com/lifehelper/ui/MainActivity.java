@@ -80,6 +80,11 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     DrawerLayout mDrawerLayout;
     @Bind(R.id.msv_map_state_view)
     MapStateView mMapStateView;
+    @Bind(R.id.msv_map_state_traffic)
+    MapStateView mMapStateViewTraffic;
+    @Bind(R.id.msv_map_state_satellite)
+    MapStateView mMapStateViewSatellite;
+
     private ActionBarDrawerToggle mToggle;
     private LatLng mCurrentCenpt;
     private MyOrientationListener mOrientationListener;
@@ -138,6 +143,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private void initBaiduClient() {
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMyLocationEnabled(true);
+        mBaiduMap.setTrafficEnabled(true);
         mBaiduMap.getUiSettings().setCompassEnabled(true);
 
         mMapView.showZoomControls(false);
@@ -185,10 +191,56 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             }
         });
 
+        mMapStateViewTraffic.setmOnMapIconAndTextClickListener(new MapStateView.OnMapIconAndTextClickListener() {
+            @Override
+            public void mapIconAndTextClick(int iconAndTextSate) {
+                if (iconAndTextSate == MapStateView.MAP_TEXT_STATE.MAP_ICON_ON) {
+                    mBaiduMap.setTrafficEnabled(false);
+                    mMapStateViewTraffic.setmCurrentIconAndTextState(MapStateView.MAP_TEXT_STATE.MAP_ICON_OFF);
+                    T.show(MainActivity.this, getResources().getString(R.string.traffic_off), 0);
+                } else {
+                    mBaiduMap.setTrafficEnabled(true);
+                    mMapStateViewTraffic.setmCurrentIconAndTextState(MapStateView.MAP_TEXT_STATE.MAP_ICON_ON);
+                    T.show(MainActivity.this, getResources().getString(R.string.traffic_on), 0);
+                }
+            }
+        });
+
+
+        mMapStateViewSatellite.setmOnMapIconAndTextClickListener(new MapStateView.OnMapIconAndTextClickListener() {
+            @Override
+            public void mapIconAndTextClick(int iconAndTextSate) {
+                if (iconAndTextSate == MapStateView.MAP_TEXT_STATE.MAP_ICON_ON) {
+                    mBaiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
+                    mMapStateViewSatellite.setmCurrentIconAndTextState(MapStateView.MAP_TEXT_STATE.MAP_ICON_OFF);
+                    T.show(MainActivity.this, getResources().getString(R.string.satellite_on), 0);
+                } else {
+                    mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+                    mMapStateViewSatellite.setmCurrentIconAndTextState(MapStateView.MAP_TEXT_STATE.MAP_ICON_ON);
+                    T.show(MainActivity.this, getResources().getString(R.string.satellite_off), 0);
+                }
+            }
+        });
+
+
         mMapStateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //do samething in onTouchEvent
+            }
+        });
+
+        mMapStateViewTraffic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // do sameting in onTouchEvent
+            }
+        });
+
+        mMapStateViewSatellite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // do sameting in onTouchEvent
             }
         });
     }

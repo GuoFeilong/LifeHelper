@@ -11,6 +11,7 @@
         <attr name="mapText" format="string" />
         <attr name="mapTextColor" format="color" />
         <attr name="mapTextSize" format="dimension" />
+        <attr name="mapIconMode" format="boolean"/>
     </declare-styleable>
 
 </resources>

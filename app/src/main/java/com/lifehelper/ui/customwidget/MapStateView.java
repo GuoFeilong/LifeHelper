@@ -7,10 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -25,7 +27,9 @@ public class MapStateView extends View {
     private static final float DE_WIDTH = 35.f;
     private static final float DE_HEIGHT = 35.f;
     private static final float DE_RADIO = 3.f;
-    private static final float ZOOM_P = 1.5f;
+    private static final float ZOOM_P = 1.4f;
+    private static final float ZOOM_P_T = 1.6f;
+    private static final int COMMON_MARGIN = -5;
 
     private int mBackgroudColor;
     private int strokeColor;
@@ -50,7 +54,16 @@ public class MapStateView extends View {
     private Bitmap mStereoStateIconBitMap;
     private Bitmap mNoCurrentLocationIconBitMap;
     private int mCurrentState = MAP_STATE.NORMAL;
+    private boolean isMapIconMode;
+    private Path mTextPath;
+    private RectF textRectF;
+    private float textH;
+    private float textW;
+    private int mCurrentIconAndTextState = MAP_TEXT_STATE.MAP_ICON_ON;
 
+    /**
+     * for map icon mode
+     */
     public interface OnMapStateViewClickListener {
         void mapStateViewClick(int currentState);
     }
@@ -59,6 +72,19 @@ public class MapStateView extends View {
 
     public void setmOnMapStateViewClickListener(OnMapStateViewClickListener mOnMapStateViewClickListener) {
         this.mOnMapStateViewClickListener = mOnMapStateViewClickListener;
+    }
+
+    /**
+     * for map icon and text
+     */
+    public interface OnMapIconAndTextClickListener {
+        void mapIconAndTextClick(int iconAndTextSate);
+    }
+
+    private OnMapIconAndTextClickListener mOnMapIconAndTextClickListener;
+
+    public void setmOnMapIconAndTextClickListener(OnMapIconAndTextClickListener mOnMapIconAndTextClickListener) {
+        this.mOnMapIconAndTextClickListener = mOnMapIconAndTextClickListener;
     }
 
     public MapStateView(Context context) {
@@ -103,6 +129,9 @@ public class MapStateView extends View {
                 case R.styleable.MapStateView_mapTextSize:
                     mapTextSize = typedArray.getDimensionPixelOffset(attr, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11, getResources().getDisplayMetrics()));
                     break;
+                case R.styleable.MapStateView_mapIconMode:
+                    isMapIconMode = typedArray.getBoolean(attr, true);
+                    break;
             }
         }
         typedArray.recycle();
@@ -115,24 +144,41 @@ public class MapStateView extends View {
         mTextPaint = creatPaint(mapTextColor, mapTextSize);
         mDeRadio = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DE_RADIO, getResources().getDisplayMetrics());
 
-        BitmapDrawable bitmapDrawable;
-        if (normalStateIcon != null) {
-            bitmapDrawable = (BitmapDrawable) normalStateIcon;
-            mNormalStateIconBitMap = bitmapDrawable.getBitmap();
-            mNormalStateIconBitMap = zoomImage(mNormalStateIconBitMap, mNormalStateIconBitMap.getWidth() * ZOOM_P, mNormalStateIconBitMap.getHeight() * ZOOM_P);
-        }
-        if (stereoStateIcon != null) {
-            bitmapDrawable = (BitmapDrawable) stereoStateIcon;
-            mStereoStateIconBitMap = bitmapDrawable.getBitmap();
-            mStereoStateIconBitMap = zoomImage(mStereoStateIconBitMap, mStereoStateIconBitMap.getWidth() * ZOOM_P, mStereoStateIconBitMap.getHeight() * ZOOM_P);
+        if (isMapIconMode) {
+            // three icon mode
+            BitmapDrawable bitmapDrawable;
+            if (normalStateIcon != null) {
+                bitmapDrawable = (BitmapDrawable) normalStateIcon;
+                mNormalStateIconBitMap = bitmapDrawable.getBitmap();
+                mNormalStateIconBitMap = zoomImage(mNormalStateIconBitMap, mNormalStateIconBitMap.getWidth() * ZOOM_P, mNormalStateIconBitMap.getHeight() * ZOOM_P);
+            }
+            if (stereoStateIcon != null) {
+                bitmapDrawable = (BitmapDrawable) stereoStateIcon;
+                mStereoStateIconBitMap = bitmapDrawable.getBitmap();
+                mStereoStateIconBitMap = zoomImage(mStereoStateIconBitMap, mStereoStateIconBitMap.getWidth() * ZOOM_P, mStereoStateIconBitMap.getHeight() * ZOOM_P);
 
-        }
-        if (noCurrentLocationIcon != null) {
-            bitmapDrawable = (BitmapDrawable) noCurrentLocationIcon;
-            mNoCurrentLocationIconBitMap = bitmapDrawable.getBitmap();
-            mNoCurrentLocationIconBitMap = zoomImage(mNoCurrentLocationIconBitMap, mNoCurrentLocationIconBitMap.getWidth() * ZOOM_P, mNoCurrentLocationIconBitMap.getHeight() * ZOOM_P);
+            }
+            if (noCurrentLocationIcon != null) {
+                bitmapDrawable = (BitmapDrawable) noCurrentLocationIcon;
+                mNoCurrentLocationIconBitMap = bitmapDrawable.getBitmap();
+                mNoCurrentLocationIconBitMap = zoomImage(mNoCurrentLocationIconBitMap, mNoCurrentLocationIconBitMap.getWidth() * ZOOM_P, mNoCurrentLocationIconBitMap.getHeight() * ZOOM_P);
+            }
+        } else {
+            // tow icon or text
+            BitmapDrawable bitmapDrawable;
+            if (normalStateIcon != null) {
+                bitmapDrawable = (BitmapDrawable) normalStateIcon;
+                mNormalStateIconBitMap = bitmapDrawable.getBitmap();
+                mNormalStateIconBitMap = zoomImage(mNormalStateIconBitMap, mNormalStateIconBitMap.getWidth() * ZOOM_P_T, mNormalStateIconBitMap.getHeight() * ZOOM_P_T);
 
+            }
+            if (stereoStateIcon != null) {
+                bitmapDrawable = (BitmapDrawable) stereoStateIcon;
+                mStereoStateIconBitMap = bitmapDrawable.getBitmap();
+                mStereoStateIconBitMap = zoomImage(mStereoStateIconBitMap, mStereoStateIconBitMap.getWidth() * ZOOM_P_T, mStereoStateIconBitMap.getHeight() * ZOOM_P_T);
+            }
         }
+
     }
 
 
@@ -220,6 +266,10 @@ public class MapStateView extends View {
         mStrokeRectF = new RectF(0, 0, mWidth, mHeight);
         mBackgroudRectF = new RectF(strokeWidth, strokeWidth, mWidth - strokeWidth, mHeight - strokeWidth);
 
+        if (!isMapIconMode) {
+            textW = mTextPaint.measureText(mapText);
+            textH = Math.abs(mTextPaint.getFontMetrics().ascent) + Math.abs(mTextPaint.getFontMetrics().descent);
+        }
     }
 
     @Override
@@ -227,18 +277,59 @@ public class MapStateView extends View {
         super.onDraw(canvas);
         drawMapStroke(canvas, mStrokeRectF);
         drawMapBackgroud(canvas, mBackgroudRectF);
-        switch (mCurrentState) {
-            case MAP_STATE.NORMAL:
-                drawMapIcon(canvas, mNormalStateIconBitMap);
-                break;
-            case MAP_STATE.STEREO:
-                drawMapIcon(canvas, mStereoStateIconBitMap);
-                break;
-            case MAP_STATE.NO_CURRENT_LOCATION:
-                drawMapIcon(canvas, mNoCurrentLocationIconBitMap);
-                break;
+        if (isMapIconMode) {
+            switch (mCurrentState) {
+                case MAP_STATE.NORMAL:
+                    drawMapIcon(canvas, mNormalStateIconBitMap);
+                    break;
+                case MAP_STATE.STEREO:
+                    drawMapIcon(canvas, mStereoStateIconBitMap);
+                    break;
+                case MAP_STATE.NO_CURRENT_LOCATION:
+                    drawMapIcon(canvas, mNoCurrentLocationIconBitMap);
+                    break;
+            }
+
+        } else {
+            // icon and text mode
+            switch (mCurrentIconAndTextState) {
+                case MAP_TEXT_STATE.MAP_ICON_ON:
+                    if (!TextUtils.isEmpty(mapText)){
+                        drawTextModeIcon(canvas, mNormalStateIconBitMap);
+                        drawTextModeText(canvas, mNormalStateIconBitMap);
+                    }else {
+                        // only draw icon
+                        drawMapIcon(canvas, mNormalStateIconBitMap);
+                    }
+                    break;
+                case MAP_TEXT_STATE.MAP_ICON_OFF:
+                    if (!TextUtils.isEmpty(mapText)){
+                        drawTextModeIcon(canvas, mStereoStateIconBitMap);
+                        drawTextModeText(canvas, mStereoStateIconBitMap);
+                    }else {
+                        // only draw icon
+                        drawMapIcon(canvas, mStereoStateIconBitMap);
+                    }
+                    break;
+            }
+
         }
 
+    }
+
+    private void drawTextModeText(Canvas canvas, Bitmap bitmapIcon) {
+
+        if (!isMapIconMode) {
+            textRectF = new RectF((mWidth - textW) / 2, bitmapIcon.getHeight() + COMMON_MARGIN + textH + (mHeight - bitmapIcon.getHeight() - textH - COMMON_MARGIN) / 2, (mWidth - textW) / 2 + textW, (mHeight - bitmapIcon.getHeight() - textH) / 2 + bitmapIcon.getHeight() + textH);
+            mTextPath = new Path();
+            mTextPath.addRect(textRectF, Path.Direction.CW);
+        }
+
+        canvas.drawTextOnPath(mapText, mTextPath, 0, 0, mTextPaint);
+    }
+
+    private void drawTextModeIcon(Canvas canvas, Bitmap bitmapIcon) {
+        canvas.drawBitmap(bitmapIcon, (mWidth - bitmapIcon.getWidth()) / 2, (mHeight - bitmapIcon.getHeight() - textH - COMMON_MARGIN) / 2, mBackgroudPaint);
     }
 
     private void drawMapIcon(Canvas canvas, Bitmap bitmapIcon) {
@@ -263,12 +354,26 @@ public class MapStateView extends View {
         public static final int NO_CURRENT_LOCATION = 11;
     }
 
+    /**
+     * icon and text state
+     */
+    public static class MAP_TEXT_STATE {
+        public static final int MAP_ICON_ON = 12;
+        public static final int MAP_ICON_OFF = 13;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (mOnMapStateViewClickListener != null) {
-                    mOnMapStateViewClickListener.mapStateViewClick(mCurrentState);
+                if (isMapIconMode) {
+                    if (mOnMapStateViewClickListener != null) {
+                        mOnMapStateViewClickListener.mapStateViewClick(mCurrentState);
+                    }
+                } else {
+                    if (mOnMapIconAndTextClickListener != null) {
+                        mOnMapIconAndTextClickListener.mapIconAndTextClick(mCurrentIconAndTextState);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -291,9 +396,17 @@ public class MapStateView extends View {
      * @param currentState
      */
     private void postInvalidateIcon(int currentState) {
-        mCurrentState = currentState;
+        if (isMapIconMode) {
+            mCurrentState = currentState;
+        } else {
+            mCurrentIconAndTextState = currentState;
+        }
         postInvalidate();
     }
 
+    public void setmCurrentIconAndTextState(int mCurrentIconAndTextState) {
+        this.mCurrentIconAndTextState = mCurrentIconAndTextState;
+        postInvalidateIcon(mCurrentIconAndTextState);
 
+    }
 }

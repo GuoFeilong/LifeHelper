@@ -11,16 +11,16 @@
 
     <com.baidu.mapapi.map.MapView
         android:id="@+id/bmapView"
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:clickable="true" />
 
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:visibility="visible"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="visible">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -61,12 +61,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_margin="@dimen/activity_vertical_margin_big"
+        android:layout_margin="@dimen/activity_vertical_margin"
         app:mapBackgroudColor="@color/skin_dialog_white"
+        app:mapIconMode="true"
         app:mapStrokeColor="@color/common_line"
         app:mapStrokeWidth="1px"
         app:noCurrentLocationIcon="@mipmap/main_icon_location"
         app:normalStateIcon="@mipmap/main_icon_follow"
         app:stereoStateIcon="@mipmap/main_icon_compass" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginTop="120dp"
+        android:orientation="vertical">
+
+        <com.lifehelper.ui.customwidget.MapStateView
+            android:id="@+id/msv_map_state_traffic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mapBackgroudColor="@color/skin_dialog_white"
+            app:mapIconMode="false"
+            app:mapStrokeColor="@color/common_line"
+            app:mapStrokeWidth="1px"
+            app:mapText="路况"
+            app:mapTextColor="@color/common_text_color"
+            app:mapTextSize="10sp"
+            app:normalStateIcon="@mipmap/main_icon_roadcondition_on"
+            app:stereoStateIcon="@mipmap/main_icon_roadcondition_off" />
+
+
+        <com.lifehelper.ui.customwidget.MapStateView
+            android:id="@+id/msv_map_state_satellite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            app:mapBackgroudColor="@color/skin_dialog_white"
+            app:mapIconMode="false"
+            app:mapStrokeColor="@color/common_line"
+            app:mapStrokeWidth="1px"
+            app:mapText=""
+            app:mapTextColor="@color/common_text_color"
+            app:mapTextSize="10sp"
+            app:normalStateIcon="@mipmap/main_icon_maplayers"
+            app:stereoStateIcon="@mipmap/main_icon_maplayers" />
+
+
+    </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

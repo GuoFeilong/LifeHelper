@@ -2,4 +2,8 @@
     <string name="app_name">LIFE帮</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="satellite_on">卫星视图打开</string>
+    <string name="satellite_off">卫星视图关闭</string>
+    <string name="traffic_on">实时路况打开</string>
+    <string name="traffic_off">实时路况关闭</string>
 </resources>
