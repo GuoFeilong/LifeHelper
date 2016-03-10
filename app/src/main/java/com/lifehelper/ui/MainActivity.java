@@ -1,5 +1,8 @@
 package com.lifehelper.ui;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
@@ -50,6 +53,7 @@ import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.lifehelper.R;
+import com.lifehelper.baidumap.MyOrientationListener;
 import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
 import com.lifehelper.tools.Logger;
@@ -77,7 +81,10 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.msv_map_state_view)
     MapStateView mMapStateView;
     private ActionBarDrawerToggle mToggle;
-
+    private LatLng mCurrentCenpt;
+    private MyOrientationListener mOrientationListener;
+    private SensorManager sensorManager;
+    private Sensor sensor;
 
     @OnClick(R.id.fab)
     void flyHomeAction() {
@@ -87,7 +94,9 @@ public class MainActivity extends BaseActivity {
     private BaiduMap mBaiduMap;
     private LocationClient mLocationClient;
     private BDLocationListener mBdLocationListener;
+    private BDLocation mCurrentBDLocation;
     private boolean isFirstEnter;
+    private int mXDirection;
 
     /**
      * poi兴趣点检索
@@ -129,6 +138,8 @@ public class MainActivity extends BaseActivity {
     private void initBaiduClient() {
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMyLocationEnabled(true);
+        mBaiduMap.getUiSettings().setCompassEnabled(true);
+
         mMapView.showZoomControls(false);
         mMapView.showScaleControl(false);
 
@@ -153,23 +164,81 @@ public class MainActivity extends BaseActivity {
     protected void initEvent() {
         toggleAndDrawer();
         initBaiduClient();
+        initOritationListener();
+        initSensorManager();
         mMapStateView.setmOnMapStateViewClickListener(new MapStateView.OnMapStateViewClickListener() {
             @Override
             public void mapStateViewClick(int currentState) {
                 if (currentState == MapStateView.MAP_STATE.NORMAL) {
+                    modifyMapOverLay(mCurrentCenpt, mBaiduMap, -60.f);
+                    MyLocationConfiguration.LocationMode locationMode = MyLocationConfiguration.LocationMode.COMPASS;
+                    mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(locationMode, true, null));
+                    mBaiduMap.getUiSettings().setCompassEnabled(true);
                     mMapStateView.setmCurrentState(MapStateView.MAP_STATE.STEREO);
                 } else {
+                    modifyMapOverLay(mCurrentCenpt, mBaiduMap, 0);
+                    MyLocationConfiguration.LocationMode locationMode = MyLocationConfiguration.LocationMode.NORMAL;
+                    mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(locationMode, true, null));
+                    mBaiduMap.getUiSettings().setCompassEnabled(false);
                     mMapStateView.setmCurrentState(MapStateView.MAP_STATE.NORMAL);
                 }
-                T.show(MainActivity.this, "状态>>currentState" + currentState, 0);
             }
         });
+
         mMapStateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                T.show(MainActivity.this, "点击", 0);
+                //do samething in onTouchEvent
             }
         });
+    }
+
+    /**
+     * init Sensor
+     */
+    private void initOritationListener() {
+        mOrientationListener = new MyOrientationListener(getApplicationContext());
+        mOrientationListener.setOnOrientationListener(new MyOrientationListener.OnOrientationListener() {
+            @Override
+            public void onOrientationChanged(float x) {
+                mXDirection = (int) x;
+                MyLocationData locData = new MyLocationData.Builder()
+                        .accuracy(mCurrentBDLocation.getRadius())
+                        .direction(mXDirection)
+                        .latitude(mCurrentBDLocation.getLatitude())
+                        .longitude(mCurrentBDLocation.getLongitude()).build();
+                mBaiduMap.setMyLocationData(locData);
+                // change mapview compass degree
+            }
+        });
+    }
+
+    /**
+     * init SensorManager
+     */
+    private void initSensorManager() {
+        // get Sensor manager
+        sensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager != null) {
+            // get Orientation Sensor
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        }
+    }
+
+    /**
+     * modify Baidu map overlay
+     *
+     * @param mCurrentCenpt
+     * @param mBaiduMap
+     * @param overLay
+     */
+    private static void modifyMapOverLay(LatLng mCurrentCenpt, BaiduMap mBaiduMap, float overLay) {
+        MapStatus mMapStatus = new MapStatus.Builder()
+                .target(mCurrentCenpt)
+                .overlook(overLay)
+                .build();
+        MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+        mBaiduMap.animateMapStatus(mMapStatusUpdate);
     }
 
     /**
@@ -288,6 +357,10 @@ public class MainActivity extends BaseActivity {
         if (mLocationClient != null) {
             mLocationClient.unRegisterLocationListener(mBdLocationListener);
         }
+
+        if (mOrientationListener != null) {
+            sensorManager.unregisterListener(mOrientationListener);
+        }
     }
 
     /**
@@ -379,6 +452,10 @@ public class MainActivity extends BaseActivity {
 
             //*****************************Above is location more information**************************************
 
+            mCurrentBDLocation = location;
+            if (sensor != null && sensorManager != null) {
+                sensorManager.registerListener(mOrientationListener, sensor, SensorManager.SENSOR_DELAY_UI);
+            }
 
             if (!isFirstEnter) {
                 MyLocationData locData = new MyLocationData.Builder()
@@ -389,19 +466,20 @@ public class MainActivity extends BaseActivity {
                 // 设置定位数据
                 mBaiduMap.setMyLocationData(locData);
                 // 设置定位图层的配置（定位模式，是否允许方向信息，用户自定义定位图标）
-                BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-                        .fromResource(R.mipmap.bg_location);
-                MyLocationConfiguration config = new MyLocationConfiguration(null,
-                        true, mCurrentMarker);
+//                BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
+//                        .fromResource(R.mipmap.bg_location);
+
+                MyLocationConfiguration.LocationMode locationMode = MyLocationConfiguration.LocationMode.NORMAL;
+                MyLocationConfiguration config = new MyLocationConfiguration(locationMode,
+                        true, null);
                 mBaiduMap.setMyLocationConfigeration(config);
 
-
                 //设定中心点坐标
-                LatLng cenpt = new LatLng(location.getLatitude(), location.getLongitude());
+                mCurrentCenpt = new LatLng(location.getLatitude(), location.getLongitude());
 
                 //定义地图状态
                 MapStatus mMapStatus = new MapStatus.Builder()
-                        .target(cenpt)
+                        .target(mCurrentCenpt)
                         .zoom(18)
                         .build();
                 //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化

@@ -47,7 +47,6 @@ public class MapStateView extends View {
     private Bitmap mStereoStateIconBitMap;
     private Bitmap mNoCurrentLocationIconBitMap;
     private int mCurrentState = MAP_STATE.NORMAL;
-    private boolean isFirst;
 
     public interface OnMapStateViewClickListener {
         void mapStateViewClick(int currentState);
@@ -170,7 +169,6 @@ public class MapStateView extends View {
         int widthSize;
         int heightSize;
 
-
         if (widthMode == MeasureSpec.AT_MOST || widthMode == MeasureSpec.UNSPECIFIED) {
             widthSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DE_WIDTH, getResources().getDisplayMetrics());
             widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.EXACTLY);
@@ -180,7 +178,6 @@ public class MapStateView extends View {
             heightSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DE_HEIGHT, getResources().getDisplayMetrics());
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY);
         }
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
     }
@@ -260,7 +257,11 @@ public class MapStateView extends View {
         postInvalidateIcon(mCurrentState);
     }
 
-    // TODO: 16/3/9 different state different icon
+    /**
+     * notify view draw different icon
+     *
+     * @param currentState
+     */
     private void postInvalidateIcon(int currentState) {
         mCurrentState = currentState;
         postInvalidate();
