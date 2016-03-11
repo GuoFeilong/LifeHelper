@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.lifehelper.R;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -138,7 +140,7 @@ public class Tools {
     private static long[] mHits = new long[2];
 
     public static void doublePressExit(Context context) {
-        T.show(context, "双击退出YouthArea", 0);
+        T.show(context, context.getResources().getString(R.string.app_name), 0);
         System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
         mHits[mHits.length - 1] = SystemClock.uptimeMillis();
         if (mHits[0] >= (SystemClock.uptimeMillis() - 1000)) {

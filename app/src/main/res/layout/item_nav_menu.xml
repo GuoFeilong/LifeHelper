@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_horizontal_margin">
+
+
+    <ImageView
+        android:id="@+id/iv_nav_item_icon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/icon_nearby_food_normal" />
+
+    <TextView
+        android:id="@+id/tv_nav_item_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/activity_vertical_margin_big"
+        android:layout_toRightOf="@id/iv_nav_item_icon"
+        android:text="吃"
+        android:textColor="@color/common_text_color"
+        android:textSize="@dimen/comment_text_headersize" />
+
+
+    <ImageView
+        android:id="@+id/iv_nav_item_bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/iv_nav_item_icon"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:background="@color/common_line"
+        android:visibility="invisible" />
+</RelativeLayout>

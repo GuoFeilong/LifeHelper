@@ -8,4 +8,8 @@
     <string name="traffic_off">实时路况关闭</string>
     <string name="navigation_header_set_onekey_home">邀您体验一键回家</string>
     <string name="nav_home_ready">Home就绪,即可一键回家</string>
+    <string name="nav_food">吃</string>
+    <string name="nav_pa">啪</string>
+    <string name="nav_play">玩</string>
+    <string name="nav_happy">乐</string>
 </resources>

@@ -1,15 +1,21 @@
 package com.lifehelper.ui;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -56,10 +62,13 @@ import com.lifehelper.R;
 import com.lifehelper.baidumap.MyOrientationListener;
 import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
+import com.lifehelper.entity.NavMenuEntity;
+import com.lifehelper.presenter.impl.NavMenuPresenterImpl;
 import com.lifehelper.tools.Logger;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.Tools;
 import com.lifehelper.ui.customwidget.MapStateView;
+import com.lifehelper.view.NavMenuView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,13 +78,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusChangeListener {
+public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusChangeListener, NavMenuView {
     @Bind(R.id.bmapView)
     MapView mMapView;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.fab)
-    FloatingActionButton mFlyHome;
+    @Bind(R.id.iv_route_line)
+    ImageView mRouteLine;
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @Bind(R.id.msv_map_state_view)
@@ -84,15 +93,19 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     MapStateView mMapStateViewTraffic;
     @Bind(R.id.msv_map_state_satellite)
     MapStateView mMapStateViewSatellite;
+    @Bind(R.id.rlv_nav_menu_container)
+    RecyclerView mRecyclerNavMenuContainer;
 
+    private NavMenuAdapter mNavMenuAdapter;
+    private NavMenuPresenterImpl mNavMenuPresenter;
     private ActionBarDrawerToggle mToggle;
     private LatLng mCurrentCenpt;
     private MyOrientationListener mOrientationListener;
     private SensorManager sensorManager;
     private Sensor sensor;
 
-    @OnClick(R.id.fab)
-    void flyHomeAction() {
+    @OnClick(R.id.iv_route_line)
+    void routeLine() {
         T.show(this, "测试", 0);
     }
 
@@ -158,7 +171,8 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @Override
     protected void initData() {
-
+        mNavMenuAdapter = new NavMenuAdapter();
+        mNavMenuPresenter = new NavMenuPresenterImpl(this);
     }
 
     @Override
@@ -168,6 +182,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @Override
     protected void initEvent() {
+        mNavMenuPresenter.getNavMenuData();
         toggleAndDrawer();
         initBaiduClient();
         initOritationListener();
@@ -453,6 +468,13 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     @Override
     public void onMapStatusChangeFinish(MapStatus mapStatus) {
 
+    }
+
+    @Override
+    public void bindNavMenus(List<NavMenuEntity> navMenus) {
+        mRecyclerNavMenuContainer.setLayoutManager(new LinearLayoutManager(this));
+        mNavMenuAdapter.setMenuEntities(navMenus);
+        mRecyclerNavMenuContainer.setAdapter(mNavMenuAdapter);
     }
 
 
@@ -774,4 +796,57 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             }
         }
     }
+
+
+    class NavMenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private List<NavMenuEntity> menuEntities;
+
+        public void setMenuEntities(List<NavMenuEntity> menuEntities) {
+            this.menuEntities = menuEntities;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            NavMenuHolder navMenuHolder = new NavMenuHolder(LayoutInflater
+                    .from(MainActivity.this)
+                    .inflate(R.layout.item_nav_menu, parent, false));
+            return navMenuHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            NavMenuEntity currentNavMenuEntity = menuEntities.get(position);
+            NavMenuHolder navMenuHolder = (NavMenuHolder) holder;
+            navMenuHolder.navMenuIcon.setImageResource(currentNavMenuEntity.getNavMenuIcon());
+            navMenuHolder.navMenuDesc.setText(currentNavMenuEntity.getNavMenuName());
+            if (position == menuEntities.size() - 2) {
+                navMenuHolder.navMenuBottomLine.setVisibility(View.VISIBLE);
+            }
+            if (position == menuEntities.size() - 1) {
+                navMenuHolder.navMenuDesc.setTextColor(getResources().getColor(R.color.skin_colorPrimary_tea));
+                navMenuHolder.navMenuDesc.setTypeface(Typeface.DEFAULT_BOLD);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return menuEntities.size();
+        }
+
+        class NavMenuHolder extends RecyclerView.ViewHolder {
+            @Bind(R.id.iv_nav_item_icon)
+            ImageView navMenuIcon;
+            @Bind(R.id.tv_nav_item_desc)
+            TextView navMenuDesc;
+            @Bind(R.id.iv_nav_item_bottom_line)
+            ImageView navMenuBottomLine;
+
+            public NavMenuHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+
+    }
+
 }

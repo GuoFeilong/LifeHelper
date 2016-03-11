@@ -34,27 +34,25 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
             </LinearLayout>
-
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/iv_route_line"
+        android:layout_width="@dimen/nav_header_bigicon_size"
+        android:layout_height="@dimen/nav_header_bigicon_size"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:src="@mipmap/bg_fly_home_white"
+        android:src="@mipmap/icon_home_route"
         android:visibility="visible"
-        app:backgroundTint="@color/skin_colorAccent_indigo"
-        app:rippleColor="@color/colorPrimaryDark" />
+         />
 
     <com.lifehelper.ui.customwidget.MapStateView
         android:id="@+id/msv_map_state_view"
