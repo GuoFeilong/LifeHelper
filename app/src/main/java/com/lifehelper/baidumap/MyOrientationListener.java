@@ -32,16 +32,17 @@ public class MyOrientationListener implements SensorEventListener {
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         }
         // 注册
-        if (sensor != null) {//SensorManager.SENSOR_DELAY_UI
-            sensorManager.registerListener(this, sensor,
-                    SensorManager.SENSOR_DELAY_UI);
+        if (sensor != null && sensorManager != null) {//SensorManager.SENSOR_DELAY_UI
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
         }
 
     }
 
     // 停止检测
     public void stop() {
-        sensorManager.unregisterListener(this);
+        if (sensorManager!=null){
+            sensorManager.unregisterListener(this);
+        }
     }
 
     @Override

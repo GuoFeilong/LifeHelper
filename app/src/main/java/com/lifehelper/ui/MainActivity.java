@@ -411,6 +411,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         }
 
         if (mOrientationListener != null) {
+            mOrientationListener.stop();
             sensorManager.unregisterListener(mOrientationListener);
         }
         if (mBaiduMap != null) {

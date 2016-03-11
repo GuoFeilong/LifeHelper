@@ -6,4 +6,6 @@
     <string name="satellite_off">卫星视图关闭</string>
     <string name="traffic_on">实时路况打开</string>
     <string name="traffic_off">实时路况关闭</string>
+    <string name="navigation_header_set_onekey_home">邀您体验一键回家</string>
+    <string name="nav_home_ready">Home就绪,即可一键回家</string>
 </resources>

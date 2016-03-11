@@ -3,4 +3,12 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_vertical_margin_big">24dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="comment_text_headersize">15sp</dimen>
+    <dimen name="nav_header_padding">8dp</dimen>
+    <dimen name="nav_header_icon_size">40dp</dimen>
+    <dimen name="comment_text_size">11sp</dimen>
 </resources>
