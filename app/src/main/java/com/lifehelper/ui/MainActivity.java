@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -68,12 +69,15 @@ import com.lifehelper.R;
 import com.lifehelper.baidumap.MyOrientationListener;
 import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
+import com.lifehelper.entity.NavMenuDetailEntity;
 import com.lifehelper.entity.NavMenuEntity;
+import com.lifehelper.presenter.impl.NavMenuDetailPresenterImpl;
 import com.lifehelper.presenter.impl.NavMenuPresenterImpl;
 import com.lifehelper.tools.Logger;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.Tools;
 import com.lifehelper.ui.customwidget.MapStateView;
+import com.lifehelper.view.NavMenuDetailView;
 import com.lifehelper.view.NavMenuView;
 
 import java.util.ArrayList;
@@ -84,7 +88,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusChangeListener, NavMenuView {
+public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusChangeListener, NavMenuView, NavMenuDetailView {
     @Bind(R.id.bmapView)
     MapView mMapView;
     @Bind(R.id.toolbar)
@@ -105,13 +109,15 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     private NavMenuAdapter mNavMenuAdapter;
     private NavMenuPresenterImpl mNavMenuPresenter;
+    private NavMenuDetailPresenterImpl mNavMenuDetailPresenter;
     private ActionBarDrawerToggle mToggle;
     private LatLng mCurrentCenpt;
     private MyOrientationListener mOrientationListener;
     private SensorManager sensorManager;
     private Sensor sensor;
-    private PopupWindow mNavPopupWindow;
+    private NavDetailPopWindow mNavPopupWindow;
     private View popView;
+    private List<NavMenuDetailEntity> mNavMenuDetails;
 
     @OnClick(R.id.iv_route_line)
     void routeLine() {
@@ -179,6 +185,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     protected void initData() {
         mNavMenuAdapter = new NavMenuAdapter();
         mNavMenuPresenter = new NavMenuPresenterImpl(this);
+        mNavMenuDetailPresenter = new NavMenuDetailPresenterImpl(this);
         mNavMenuAdapter.setOnRecylerItemClickListener(new OnRecylerItemClickListener() {
             @Override
             public void onRecylerItemClick(int clickType) {
@@ -199,9 +206,17 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
      * @param clickType
      */
     private void showNavDetailPop(int clickType) {
-        mNavPopupWindow = new NavDetailPopWindow(this);
-        mNavPopupWindow.showAtLocation(getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        for (int i = 0; i < mNavMenuDetails.size(); i++) {
+            NavMenuDetailEntity currentNavMD = mNavMenuDetails.get(i);
+            if (clickType == currentNavMD.getNavMenuDetaType()) {
+                mNavPopupWindow = new NavDetailPopWindow(this);
+                mNavPopupWindow.setNavMenuDetailEntity(currentNavMD);
+                mNavPopupWindow.showAtLocation(getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                return;
+            }
+        }
     }
+
 
     /**
      * if you want use butterknife in popwindow
@@ -209,6 +224,20 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
      * because it only support local variable
      */
     class NavDetailPopWindow extends PopupWindow {
+        private NavMenuDetailEntity navMenuDetailEntity;
+        private Context context;
+
+        public void setNavMenuDetailEntity(NavMenuDetailEntity navMenuDetailEntity) {
+            this.navMenuDetailEntity = navMenuDetailEntity;
+            mPopHeaderIcon.setImageResource(navMenuDetailEntity.getNavMenuDetailIcon());
+            mPopHeaderDesc.setBackgroundColor(context.getResources().getColor(navMenuDetailEntity.getNavMenuDetailColor()));
+            mPopHeaderDesc.setText(navMenuDetailEntity.getNavMenuDetailTitle());
+
+            mPopRecyclerViewDiff.setLayoutManager(new GridLayoutManager(context, 2));
+            PopNavMenuDeAdapter popNavMenuDeAdapter = new PopNavMenuDeAdapter();
+            mPopRecyclerViewDiff.setAdapter(popNavMenuDeAdapter);
+        }
+
         @Bind(R.id.iv_pop_header_icon)
         ImageView mPopHeaderIcon;
         @Bind(R.id.tv_nav_menu_detail_title)
@@ -222,7 +251,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
         public NavDetailPopWindow(Context context) {
             super(context);
-
+            this.context = context;
             popView = LayoutInflater
                     .from(context)
                     .inflate(R.layout.pop_nav_menu_detail, null, false);
@@ -237,17 +266,47 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
             ObjectAnimator popHeaderAnim = ObjectAnimator.ofFloat(mPopIconContainer, "translationY", -310, 0);
             popHeaderAnim.setInterpolator(new BounceInterpolator());
-            popHeaderAnim.setDuration(1500);
+            popHeaderAnim.setDuration(1300);
 
             ObjectAnimator popBodyAnim = ObjectAnimator.ofFloat(mPopBody, "translationY", 310, 0);
             popBodyAnim.setInterpolator(new BounceInterpolator());
-            popBodyAnim.setDuration(1500);
+            popBodyAnim.setDuration(1300);
 
             popHeaderAnim.start();
             popBodyAnim.start();
 
         }
 
+        class PopNavMenuDeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                PopNavMenuVH popNavMenuVH = new PopNavMenuVH(LayoutInflater.from(context).inflate(R.layout.item_pop_menu_detail, parent, false));
+                return popNavMenuVH;
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                PopNavMenuVH popNavMenuVH = (PopNavMenuVH) holder;
+                popNavMenuVH.popMenuName.setText(navMenuDetailEntity.getNavMenuDetailList().get(position));
+            }
+
+            @Override
+            public int getItemCount() {
+                return navMenuDetailEntity.getNavMenuDetailList().size();
+            }
+
+            class PopNavMenuVH extends RecyclerView.ViewHolder {
+                @Bind(R.id.tv_item_pop_diff)
+                TextView popMenuName;
+
+                public PopNavMenuVH(View itemView) {
+                    super(itemView);
+                    ButterKnife.bind(this, itemView);
+                }
+            }
+
+        }
     }
 
 
@@ -259,6 +318,8 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     @Override
     protected void initEvent() {
         mNavMenuPresenter.getNavMenuData();
+        mNavMenuDetailPresenter.getNavMenuDetail();
+
         toggleAndDrawer();
         initBaiduClient();
         initOritationListener();
@@ -552,6 +613,11 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         mRecyclerNavMenuContainer.setLayoutManager(new LinearLayoutManager(this));
         mNavMenuAdapter.setMenuEntities(navMenus);
         mRecyclerNavMenuContainer.setAdapter(mNavMenuAdapter);
+    }
+
+    @Override
+    public void bindNavMenusDetail(List<NavMenuDetailEntity> navMenuDetails) {
+        mNavMenuDetails = navMenuDetails;
     }
 
 

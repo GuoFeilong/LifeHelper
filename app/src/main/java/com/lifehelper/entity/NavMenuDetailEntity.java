@@ -11,6 +11,15 @@ public class NavMenuDetailEntity {
     private int navMenuDetailIcon;
     private int navMenuDetailColor;
     private List<String> navMenuDetailList;
+    private int navMenuDetaType;
+
+    public int getNavMenuDetaType() {
+        return navMenuDetaType;
+    }
+
+    public void setNavMenuDetaType(int navMenuDetaType) {
+        this.navMenuDetaType = navMenuDetaType;
+    }
 
     public String getNavMenuDetailTitle() {
         return navMenuDetailTitle;
