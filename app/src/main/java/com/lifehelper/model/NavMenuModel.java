@@ -29,12 +29,14 @@ public class NavMenuModel {
 
         temp = new NavMenuEntity();
         temp.setNavMenuName("乐");
+        temp.setIsShowBottomLine(true);
         temp.setNavMenuIcon(R.mipmap.icon_nearby_film_normal);
         navMenuEntities.add(temp);
 
 
         temp = new NavMenuEntity();
         temp.setNavMenuName("谁");
+        temp.setIsBoldText(true);
         temp.setNavMenuIcon(R.mipmap.icon_nav_menu_about);
         navMenuEntities.add(temp);
 

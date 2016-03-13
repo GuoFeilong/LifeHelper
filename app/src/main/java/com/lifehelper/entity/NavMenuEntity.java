@@ -6,6 +6,16 @@ package com.lifehelper.entity;
 public class NavMenuEntity {
     private String navMenuName;
     private int navMenuIcon;
+    private boolean isShowBottomLine;
+    private boolean isBoldText;
+
+    public boolean isBoldText() {
+        return isBoldText;
+    }
+
+    public void setIsBoldText(boolean isBoldText) {
+        this.isBoldText = isBoldText;
+    }
 
     public String getNavMenuName() {
         return navMenuName;
@@ -23,11 +33,11 @@ public class NavMenuEntity {
         this.navMenuIcon = navMenuIcon;
     }
 
-    @Override
-    public String toString() {
-        return "NavMenuEntity{" +
-                "navMenuName='" + navMenuName + '\'' +
-                ", navMenuIcon=" + navMenuIcon +
-                '}';
+    public boolean isShowBottomLine() {
+        return isShowBottomLine;
+    }
+
+    public void setIsShowBottomLine(boolean isShowBottomLine) {
+        this.isShowBottomLine = isShowBottomLine;
     }
 }

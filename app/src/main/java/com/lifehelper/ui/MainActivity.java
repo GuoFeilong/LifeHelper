@@ -816,10 +816,10 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             NavMenuHolder navMenuHolder = (NavMenuHolder) holder;
             navMenuHolder.navMenuIcon.setImageResource(currentNavMenuEntity.getNavMenuIcon());
             navMenuHolder.navMenuDesc.setText(currentNavMenuEntity.getNavMenuName());
-            if (position == menuEntities.size() - 2) {
+            if (currentNavMenuEntity.isShowBottomLine()) {
                 navMenuHolder.navMenuBottomLine.setVisibility(View.VISIBLE);
             }
-            if (position == menuEntities.size() - 1) {
+            if (currentNavMenuEntity.isBoldText()) {
                 navMenuHolder.navMenuDesc.setTextColor(getResources().getColor(R.color.skin_colorPrimary_tea));
                 navMenuHolder.navMenuDesc.setTypeface(Typeface.DEFAULT_BOLD);
             }
