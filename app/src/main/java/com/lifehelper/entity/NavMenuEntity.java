@@ -8,6 +8,7 @@ public class NavMenuEntity {
     private int navMenuIcon;
     private boolean isShowBottomLine;
     private boolean isBoldText;
+    private int clickType;
 
     public boolean isBoldText() {
         return isBoldText;
@@ -15,6 +16,14 @@ public class NavMenuEntity {
 
     public void setIsBoldText(boolean isBoldText) {
         this.isBoldText = isBoldText;
+    }
+
+    public int getClickType() {
+        return clickType;
+    }
+
+    public void setClickType(int clickType) {
+        this.clickType = clickType;
     }
 
     public String getNavMenuName() {

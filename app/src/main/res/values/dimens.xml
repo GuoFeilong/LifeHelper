@@ -11,5 +11,7 @@
     <dimen name="nav_header_padding">8dp</dimen>
     <dimen name="nav_header_icon_size">40dp</dimen>
     <dimen name="comment_text_size">11sp</dimen>
+    <dimen name="comment_text_size_middle">13sp</dimen>
     <dimen name="nav_header_bigicon_size">65dp</dimen>
+    <dimen name="comment_text_headersize_big">16sp</dimen>
 </resources>
