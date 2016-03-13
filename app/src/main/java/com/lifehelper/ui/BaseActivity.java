@@ -1,6 +1,5 @@
 package com.lifehelper.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -11,12 +10,10 @@ import com.squareup.leakcanary.RefWatcher;
  * Created by jsion on 16/3/9.
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    protected Context bContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bContext = this;
         /**
          * init LeakCanary watch memory leak in activity
          */
@@ -38,6 +35,12 @@ public abstract class BaseActivity extends AppCompatActivity {
      * init events
      */
     protected abstract void initEvent();
+
+    protected void init() {
+        initData();
+        initView();
+        initEvent();
+    }
 
 
 }

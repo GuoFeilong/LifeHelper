@@ -144,10 +144,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
-
-        initData();
-        initView();
-        initEvent();
+        init();
     }
 
     /**
