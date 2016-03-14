@@ -116,6 +116,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private SensorManager sensorManager;
     private Sensor sensor;
     private NavDetailPopWindow mNavPopupWindow;
+    private OnNavPopClickListener mOnNavPopClickListener;
     private View popView;
     private List<NavMenuDetailEntity> mNavMenuDetails;
 
@@ -198,6 +199,18 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
             }
         });
+
+        mOnNavPopClickListener = new OnNavPopClickListener() {
+            @Override
+            public void onPopHeaderClick(String popItemDesc) {
+                T.show(MainActivity.this, "全部:" + popItemDesc, 0);
+            }
+
+            @Override
+            public void onPopDeItemClick(String popItemName) {
+                T.show(MainActivity.this, "附近的:" + popItemName, 0);
+            }
+        };
     }
 
     /**
@@ -211,12 +224,21 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             if (clickType == currentNavMD.getNavMenuDetaType()) {
                 mNavPopupWindow = new NavDetailPopWindow(this);
                 mNavPopupWindow.setNavMenuDetailEntity(currentNavMD);
+                mNavPopupWindow.setOnNavPopClickListener(mOnNavPopClickListener);
                 mNavPopupWindow.showAtLocation(getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 return;
             }
         }
     }
 
+    /**
+     * the interface for popwindow
+     */
+    public interface OnNavPopClickListener {
+        void onPopHeaderClick(String popItemDesc);
+
+        void onPopDeItemClick(String popItemName);
+    }
 
     /**
      * if you want use butterknife in popwindow
@@ -226,6 +248,19 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     class NavDetailPopWindow extends PopupWindow {
         private NavMenuDetailEntity navMenuDetailEntity;
         private Context context;
+        private OnNavPopClickListener onNavPopClickListener;
+
+        public void setOnNavPopClickListener(final OnNavPopClickListener onNavPopClickListener) {
+            this.onNavPopClickListener = onNavPopClickListener;
+            mPopHeaderIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onNavPopClickListener != null) {
+                        onNavPopClickListener.onPopHeaderClick(navMenuDetailEntity.getNavMenuDetailDesc());
+                    }
+                }
+            });
+        }
 
         public void setNavMenuDetailEntity(NavMenuDetailEntity navMenuDetailEntity) {
             this.navMenuDetailEntity = navMenuDetailEntity;
@@ -287,8 +322,18 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                final String currentItemName = navMenuDetailEntity.getNavMenuDetailList().get(position);
                 PopNavMenuVH popNavMenuVH = (PopNavMenuVH) holder;
-                popNavMenuVH.popMenuName.setText(navMenuDetailEntity.getNavMenuDetailList().get(position));
+                popNavMenuVH.popMenuName.setText(currentItemName);
+
+                if (onNavPopClickListener != null) {
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onNavPopClickListener.onPopDeItemClick(currentItemName);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -540,7 +585,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                 .location(latLng)
                 .radius(5000));
 
-//        mPoiSearch.searchInCity(new PoiCitySearchOption().city("北京")
+//        mPoiSearch.searchInCity(new PoiCitySearchOption().city(mCurrentBDLocation.getCity())
 //        .keyword("充电桩"));
 
     }
@@ -728,6 +773,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 //                testPOI(cenpt);
 //                testBusLine(cenpt);
 //                testRoutePlan(cenpt);
+
 
             }
 
@@ -918,10 +964,14 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (mNavPopupWindow != null && mNavPopupWindow.isShowing()) {
+            mNavPopupWindow.dismiss();
         } else {
-            Tools.doublePressExit(this);
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                Tools.doublePressExit(this);
+            }
         }
 
     }

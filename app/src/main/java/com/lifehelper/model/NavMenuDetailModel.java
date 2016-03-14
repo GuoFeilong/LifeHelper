@@ -17,6 +17,7 @@ public class NavMenuDetailModel {
 
         NavMenuDetailEntity tempNavDe = new NavMenuDetailEntity();
         tempNavDe.setNavMenuDetailTitle("发现 . 美食");
+        tempNavDe.setNavMenuDetailDesc("美食");
         tempNavDe.setNavMenuDetailColor(R.color.skin_colorPrimary_orange);
         tempNavDe.setNavMenuDetailIcon(R.mipmap.icon_nearby_food_normal);
         tempNavDe.setNavMenuDetaType(MainActivity.NAV_MENU_CLICK._EAT);
@@ -32,6 +33,7 @@ public class NavMenuDetailModel {
         tempDiff = new ArrayList<>();
         tempNavDe = new NavMenuDetailEntity();
         tempNavDe.setNavMenuDetailTitle("发现 . 美女");
+        tempNavDe.setNavMenuDetailDesc("酒店");
         tempNavDe.setNavMenuDetailColor(R.color.skin_colorPrimary_purple);
         tempNavDe.setNavMenuDetailIcon(R.mipmap.icon_nearby_hotel_normal);
         tempNavDe.setNavMenuDetaType(MainActivity.NAV_MENU_CLICK._PA);
@@ -47,6 +49,7 @@ public class NavMenuDetailModel {
         tempDiff = new ArrayList<>();
         tempNavDe = new NavMenuDetailEntity();
         tempNavDe.setNavMenuDetailTitle("发现 . 美景");
+        tempNavDe.setNavMenuDetailDesc("景点");
         tempNavDe.setNavMenuDetailColor(R.color.skin_colorPrimary_lGreen);
         tempNavDe.setNavMenuDetailIcon(R.mipmap.icon_nearby_scenery_normal);
         tempNavDe.setNavMenuDetaType(MainActivity.NAV_MENU_CLICK._PLAY);
@@ -63,6 +66,7 @@ public class NavMenuDetailModel {
         tempDiff = new ArrayList<>();
         tempNavDe = new NavMenuDetailEntity();
         tempNavDe.setNavMenuDetailTitle("发现 . 美乐");
+        tempNavDe.setNavMenuDetailDesc("娱乐");
         tempNavDe.setNavMenuDetailColor(R.color.skin_colorPrimary_mred);
         tempNavDe.setNavMenuDetailIcon(R.mipmap.icon_nearby_film_normal);
         tempNavDe.setNavMenuDetaType(MainActivity.NAV_MENU_CLICK._HAPPY);
