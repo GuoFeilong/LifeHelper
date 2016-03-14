@@ -32,4 +32,7 @@
         <!--次級界面arrow顏色-->
         <item name="color">@android:color/white</item>
     </style>
+
+
+
 </resources>

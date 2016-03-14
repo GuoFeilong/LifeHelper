@@ -29,7 +29,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.location.Poi;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -65,10 +64,13 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.lifehelper.R;
 import com.lifehelper.baidumap.MyOrientationListener;
 import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
+import com.lifehelper.entity.BottomSheetEntity;
+import com.lifehelper.entity.MyPoiInfoEntity;
 import com.lifehelper.entity.NavMenuDetailEntity;
 import com.lifehelper.entity.NavMenuEntity;
 import com.lifehelper.presenter.impl.NavMenuDetailPresenterImpl;
@@ -76,6 +78,7 @@ import com.lifehelper.presenter.impl.NavMenuPresenterImpl;
 import com.lifehelper.tools.Logger;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.Tools;
+import com.lifehelper.ui.customwidget.BottomSheetDialogView;
 import com.lifehelper.ui.customwidget.MapStateView;
 import com.lifehelper.view.NavMenuDetailView;
 import com.lifehelper.view.NavMenuView;
@@ -106,7 +109,6 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     @Bind(R.id.rlv_nav_menu_container)
     RecyclerView mRecyclerNavMenuContainer;
 
-
     private NavMenuAdapter mNavMenuAdapter;
     private NavMenuPresenterImpl mNavMenuPresenter;
     private NavMenuDetailPresenterImpl mNavMenuDetailPresenter;
@@ -132,6 +134,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private boolean isFirstEnter;
     private int mXDirection;
 
+    private List<MyPoiInfoEntity> mPoiInfoEntities;
     /**
      * poi兴趣点检索
      */
@@ -184,6 +187,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @Override
     protected void initData() {
+        mPoiInfoEntities = new ArrayList<>();
         mNavMenuAdapter = new NavMenuAdapter();
         mNavMenuPresenter = new NavMenuPresenterImpl(this);
         mNavMenuDetailPresenter = new NavMenuDetailPresenterImpl(this);
@@ -202,13 +206,22 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
         mOnNavPopClickListener = new OnNavPopClickListener() {
             @Override
-            public void onPopHeaderClick(String popItemDesc) {
-                T.show(MainActivity.this, "全部:" + popItemDesc, 0);
+            public void onPopHeaderClick(NavMenuDetailEntity popItemDesc) {
+                T.show(MainActivity.this, "全部:" + popItemDesc.getNavMenuDetailDesc(), 0);
+                mNavPopupWindow.dismiss();
+                testPOI(mCurrentCenpt, popItemDesc.getNavMenuDetailDesc(), 0, true);
+
+                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
+                bottomSheetEntity.setNavMenuDetailEntity(popItemDesc);
+                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
+                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
             }
 
             @Override
             public void onPopDeItemClick(String popItemName) {
                 T.show(MainActivity.this, "附近的:" + popItemName, 0);
+                mNavPopupWindow.dismiss();
+                testPOI(mCurrentCenpt, popItemName, 0, false);
             }
         };
     }
@@ -235,7 +248,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
      * the interface for popwindow
      */
     public interface OnNavPopClickListener {
-        void onPopHeaderClick(String popItemDesc);
+        void onPopHeaderClick(NavMenuDetailEntity popItemDesc);
 
         void onPopDeItemClick(String popItemName);
     }
@@ -256,7 +269,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                 @Override
                 public void onClick(View v) {
                     if (onNavPopClickListener != null) {
-                        onNavPopClickListener.onPopHeaderClick(navMenuDetailEntity.getNavMenuDetailDesc());
+                        onNavPopClickListener.onPopHeaderClick(navMenuDetailEntity);
                     }
                 }
             });
@@ -505,7 +518,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     /**
      * 兴趣点测试
      */
-    private void testPOI(final LatLng latLng) {
+    private void testPOI(final LatLng latLng, String nearByPoiName, int pageNum, boolean isAllCity) {
         mPoiSearch = PoiSearch.newInstance();
         mSuggestionSearch = SuggestionSearch.newInstance();
         mSuggestionSearch.setOnGetSuggestionResultListener(new OnGetSuggestionResultListener() {
@@ -534,6 +547,15 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     return;
                 }
                 if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+                    List<PoiInfo> allPoi = result.getAllPoi();
+                    mPoiInfoEntities.clear();
+                    for (PoiInfo poi : allPoi) {
+                        MyPoiInfoEntity tem = new MyPoiInfoEntity();
+                        tem.setPoiInfo(poi);
+                        tem.setDistance2MyLocation(DistanceUtil.getDistance(mCurrentCenpt, poi.location));
+                        mPoiInfoEntities.add(tem);
+                    }
+
                     mBaiduMap.clear();
                     PoiOverlay overlay = new MyPoiOverlay(mBaiduMap);
                     mBaiduMap.setOnMarkerClickListener(overlay);
@@ -545,7 +567,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     //定义地图状态
                     MapStatus mMapStatus = new MapStatus.Builder()
                             .target(latLng)
-                            .zoom(17)
+//                            .zoom(17)
                             .build();
                     //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
                     MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
@@ -581,13 +603,20 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
         mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
 
-        mPoiSearch.searchNearby(new PoiNearbySearchOption().keyword("公司")
-                .location(latLng)
-                .radius(5000));
+        if (isAllCity) {
+            mPoiSearch.searchInCity(new PoiCitySearchOption()
+                    .city(mCurrentBDLocation.getCity())
+                    .keyword(nearByPoiName)
+                    .pageNum(pageNum)
+                    .pageCapacity(10));
 
-//        mPoiSearch.searchInCity(new PoiCitySearchOption().city(mCurrentBDLocation.getCity())
-//        .keyword("充电桩"));
-
+        } else {
+            mPoiSearch.searchNearby(new PoiNearbySearchOption().keyword(nearByPoiName)
+                    .location(latLng)
+                    .pageCapacity(10)
+                    .pageNum(pageNum)
+                    .radius(5000));
+        }
     }
 
 
@@ -672,64 +701,64 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         public void onReceiveLocation(BDLocation location) {
             //*****************************Below is location more information*************************
 
-            StringBuffer sb = new StringBuffer(256);
-            sb.append("time : ");
-            sb.append(location.getTime());
-            sb.append("\nerror code : ");
-            sb.append(location.getLocType());
-            sb.append("\nlatitude : ");
-            sb.append(location.getLatitude());
-            sb.append("\nlontitude : ");
-            sb.append(location.getLongitude());
-            sb.append("\nradius : ");
-            sb.append(location.getRadius());
-            if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
-                sb.append("\nspeed : ");
-                sb.append(location.getSpeed());// 单位：公里每小时
-                sb.append("\nsatellite : ");
-                sb.append(location.getSatelliteNumber());
-                sb.append("\nheight : ");
-                sb.append(location.getAltitude());// 单位：米
-                sb.append("\ndirection : ");
-                sb.append(location.getDirection());// 单位度
-                sb.append("\naddr : ");
-                sb.append(location.getAddrStr());
-                sb.append("\ndescribe : ");
-                sb.append("gps定位成功");
-
-            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {// 网络定位结果
-                sb.append("\naddr : ");
-                sb.append(location.getAddrStr());
-                //运营商信息
-                sb.append("\noperationers : ");
-                sb.append(location.getOperators());
-                sb.append("\ndescribe : ");
-                sb.append("网络定位成功");
-            } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
-                sb.append("\ndescribe : ");
-                sb.append("离线定位成功，离线定位结果也是有效的");
-            } else if (location.getLocType() == BDLocation.TypeServerError) {
-                sb.append("\ndescribe : ");
-                sb.append("服务端网络定位失败，可以反馈IMEI号和大体定位时间到loc-bugs@baidu.com，会有人追查原因");
-            } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
-                sb.append("\ndescribe : ");
-                sb.append("网络不同导致定位失败，请检查网络是否通畅");
-            } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
-                sb.append("\ndescribe : ");
-                sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
-            }
-            sb.append("\nlocationdescribe : ");
-            sb.append(location.getLocationDescribe());// 位置语义化信息
-            List<Poi> list = location.getPoiList();// POI数据
-            if (list != null) {
-                sb.append("\npoilist size = : ");
-                sb.append(list.size());
-                for (Poi p : list) {
-                    sb.append("\npoi= : ");
-                    sb.append(p.getId() + " " + p.getName() + " " + p.getRank());
-                }
-            }
-            Logger.i("BaiduLocationApiDem", sb.toString());
+//            StringBuffer sb = new StringBuffer(256);
+//            sb.append("time : ");
+//            sb.append(location.getTime());
+//            sb.append("\nerror code : ");
+//            sb.append(location.getLocType());
+//            sb.append("\nlatitude : ");
+//            sb.append(location.getLatitude());
+//            sb.append("\nlontitude : ");
+//            sb.append(location.getLongitude());
+//            sb.append("\nradius : ");
+//            sb.append(location.getRadius());
+//            if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
+//                sb.append("\nspeed : ");
+//                sb.append(location.getSpeed());// 单位：公里每小时
+//                sb.append("\nsatellite : ");
+//                sb.append(location.getSatelliteNumber());
+//                sb.append("\nheight : ");
+//                sb.append(location.getAltitude());// 单位：米
+//                sb.append("\ndirection : ");
+//                sb.append(location.getDirection());// 单位度
+//                sb.append("\naddr : ");
+//                sb.append(location.getAddrStr());
+//                sb.append("\ndescribe : ");
+//                sb.append("gps定位成功");
+//
+//            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {// 网络定位结果
+//                sb.append("\naddr : ");
+//                sb.append(location.getAddrStr());
+//                //运营商信息
+//                sb.append("\noperationers : ");
+//                sb.append(location.getOperators());
+//                sb.append("\ndescribe : ");
+//                sb.append("网络定位成功");
+//            } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
+//                sb.append("\ndescribe : ");
+//                sb.append("离线定位成功，离线定位结果也是有效的");
+//            } else if (location.getLocType() == BDLocation.TypeServerError) {
+//                sb.append("\ndescribe : ");
+//                sb.append("服务端网络定位失败，可以反馈IMEI号和大体定位时间到loc-bugs@baidu.com，会有人追查原因");
+//            } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
+//                sb.append("\ndescribe : ");
+//                sb.append("网络不同导致定位失败，请检查网络是否通畅");
+//            } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
+//                sb.append("\ndescribe : ");
+//                sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
+//            }
+//            sb.append("\nlocationdescribe : ");
+//            sb.append(location.getLocationDescribe());// 位置语义化信息
+//            List<Poi> list = location.getPoiList();// POI数据
+//            if (list != null) {
+//                sb.append("\npoilist size = : ");
+//                sb.append(list.size());
+//                for (Poi p : list) {
+//                    sb.append("\npoi= : ");
+//                    sb.append(p.getId() + " " + p.getName() + " " + p.getRank());
+//                }
+//            }
+//            Logger.i("BaiduLocationApiDem", sb.toString());
 
             //*****************************Above is location more information**************************************
 

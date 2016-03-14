@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
     tools:context=".ui.MainActivity">
 
 
@@ -51,8 +52,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@mipmap/icon_home_route"
-        android:visibility="visible"
-         />
+        android:visibility="visible" />
 
     <com.lifehelper.ui.customwidget.MapStateView
         android:id="@+id/msv_map_state_view"
@@ -110,6 +110,5 @@
 
 
     </LinearLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>
