@@ -592,8 +592,6 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
                     // deep clone
                     NavMenuDetailEntity temp = forGetUI.clone();
-
-
                     addUI2MyPoiEntity(temp);
                     BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
                     if (!isAllCity) {
@@ -602,8 +600,6 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     bottomSheetEntity.setNavMenuDetailEntity(temp);
                     bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
                     BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
-
-
                     return;
                 }
                 if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
