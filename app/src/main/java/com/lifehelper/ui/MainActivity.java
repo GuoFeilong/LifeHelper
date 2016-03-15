@@ -124,6 +124,14 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private List<NavMenuDetailEntity> mNavMenuDetails;
     private LoadingDialog mLoadingDialog;
 
+    /**
+     * when init has load page 0,
+     * so load more from 1
+     */
+    private int bottomIndex = 1;
+    private BottomSheetDialogView mBottomSheetDialogView;
+    private LoadingDialog mLoadMoreDialog;
+
     @OnClick(R.id.iv_route_line)
     void routeLine() {
         T.show(this, "测试", 0);
@@ -135,14 +143,16 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private BDLocation mCurrentBDLocation;
     private boolean isFirstEnter;
     private int mXDirection;
-
     private List<MyPoiInfoEntity> mPoiInfoEntities;
     /**
      * poi兴趣点检索
      */
     private PoiSearch mPoiSearch;
+    private PoiSearch mLoadMorePoiSearch;
     private SuggestionSearch mSuggestionSearch;
+    private SuggestionSearch mLoadMoreSuggestionSearch;
     private ArrayList<String> suggest;
+    private ArrayList<String> mLoadMoreSuggest;
 
     /**
      * 公交地铁检索
@@ -603,7 +613,19 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     }
                     bottomSheetEntity.setNavMenuDetailEntity(temp);
                     bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
-                    BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
+
+                    mBottomSheetDialogView = BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity, new BottomSheetDialogView.OnRecyclerScrollBottomListener() {
+                        @Override
+                        public void recyclerScrollBottom() {
+                            if (mLoadMoreDialog == null) {
+                                mLoadMoreDialog = new LoadingDialog(MainActivity.this, false, "加载更多...");
+                            }
+                            mLoadMoreDialog.show();
+                            loadMorePOI(mPoiInfoEntities.get(0).getNavMenuDetailEntity(), nearByPoiName, isAllCity, latLng);
+                            bottomIndex++;
+                        }
+                    });
+//                    BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
                     return;
                 }
                 if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
@@ -646,6 +668,98 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     .location(latLng)
                     .pageCapacity(10)
                     .pageNum(pageNum)
+                    .radius(5000));
+        }
+    }
+
+    /**
+     * bottom sheet load more poi
+     *
+     * @param navMenuDetailEntity
+     * @param isAllCity
+     */
+    private void loadMorePOI(final NavMenuDetailEntity navMenuDetailEntity, String nearByPoiName, boolean isAllCity, LatLng latLng) {
+        if (mLoadMorePoiSearch == null) {
+            mLoadMorePoiSearch = PoiSearch.newInstance();
+        }
+        mLoadMoreSuggestionSearch = SuggestionSearch.newInstance();
+        mLoadMoreSuggestionSearch.setOnGetSuggestionResultListener(new OnGetSuggestionResultListener() {
+            @Override
+            public void onGetSuggestionResult(SuggestionResult suggestionResult) {
+                if (suggestionResult == null || suggestionResult.getAllSuggestions() == null) {
+                    return;
+                }
+                mLoadMoreSuggest = new ArrayList<String>();
+                for (SuggestionResult.SuggestionInfo info : suggestionResult.getAllSuggestions()) {
+                    if (info.key != null) {
+                        mLoadMoreSuggest.add(info.key);
+                    }
+                }
+
+                Logger.e(mLoadMoreSuggest.toString());
+            }
+        });
+        OnGetPoiSearchResultListener loadMorePoiListener = new OnGetPoiSearchResultListener() {
+            public void onGetPoiResult(PoiResult result) {
+                mLoadMoreDialog.dismiss();
+                //获取POI检索结果
+                if (result == null || result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
+                    T.show(MainActivity.this, getResources().getString(R.string.no_more), 0);
+                    return;
+                }
+                if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+                    List<PoiInfo> allPoi = result.getAllPoi();
+                    for (PoiInfo poi : allPoi) {
+                        MyPoiInfoEntity tem = new MyPoiInfoEntity();
+                        tem.setPoiInfo(poi);
+                        tem.setNavMenuDetailEntity(navMenuDetailEntity);
+                        tem.setDistance2MyLocation(DistanceUtil.getDistance(mCurrentCenpt, poi.location));
+                        mPoiInfoEntities.add(tem);
+                    }
+                    // notify data
+                    mBottomSheetDialogView.notifyBottomSheetData(mPoiInfoEntities);
+                    return;
+                }
+                if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
+
+                    // 当输入关键字在本市没有找到，但在其他城市找到时，返回包含该关键字信息的城市列表
+                    String strInfo = "在";
+                    for (CityInfo cityInfo : result.getSuggestCityList()) {
+                        strInfo += cityInfo.city;
+                        strInfo += ",";
+                    }
+                    strInfo += "找到结果";
+                    Toast.makeText(MainActivity.this, strInfo, Toast.LENGTH_LONG)
+                            .show();
+                }
+            }
+
+            public void onGetPoiDetailResult(PoiDetailResult result) {
+                //获取Place详情页检索结果
+                if (result.error != SearchResult.ERRORNO.NO_ERROR) {
+                    Toast.makeText(MainActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    Toast.makeText(MainActivity.this, result.getName() + ": " + result.getAddress(), Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        };
+
+        mLoadMorePoiSearch.setOnGetPoiSearchResultListener(loadMorePoiListener);
+
+        if (isAllCity) {
+            mLoadMorePoiSearch.searchInCity(new PoiCitySearchOption()
+                    .city(mCurrentBDLocation.getCity())
+                    .keyword(nearByPoiName)
+                    .pageNum(bottomIndex)
+                    .pageCapacity(10));
+
+        } else {
+            mLoadMorePoiSearch.searchNearby(new PoiNearbySearchOption().keyword(nearByPoiName)
+                    .location(latLng)
+                    .pageCapacity(10)
+                    .pageNum(bottomIndex)
                     .radius(5000));
         }
     }

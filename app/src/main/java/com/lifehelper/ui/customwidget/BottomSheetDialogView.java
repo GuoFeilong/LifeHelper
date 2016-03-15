@@ -25,11 +25,16 @@ import butterknife.ButterKnife;
 public class BottomSheetDialogView {
     private Context context;
     private BottomSheetEntity bottomSheetEntity;
-
+    private List<MyPoiInfoEntity> bottomPoiData;
     @Bind(R.id.tv_bottom_desc)
     TextView bottomDesc;
     @Bind(R.id.rlv_bottom_all)
     RecyclerView bottomAll;
+    private BottomSheetDeAdapter bottomSheetDeAdapter;
+
+    public interface OnRecyclerScrollBottomListener {
+        void recyclerScrollBottom();
+    }
 
     public BottomSheetDialogView(Context context, BottomSheetEntity bottomSheetEntity) {
         this.context = context;
@@ -42,25 +47,80 @@ public class BottomSheetDialogView {
         bottomSheetDialog.show();
     }
 
+
+    public BottomSheetDialogView(Context context, BottomSheetEntity bottomSheetEntity, OnRecyclerScrollBottomListener onRecyclerScrollBottomListener) {
+        this.context = context;
+        this.bottomSheetEntity = bottomSheetEntity;
+        View bottomView = LayoutInflater.from(context).inflate(R.layout.layout_bottom_sheet, null);
+        ButterKnife.bind(this, bottomView);
+        initEvent(bottomSheetEntity, onRecyclerScrollBottomListener);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+        bottomSheetDialog.setContentView(bottomView);
+        bottomSheetDialog.show();
+    }
+
     private void initEvent(BottomSheetEntity bottomSheetEntity) {
+        this.bottomPoiData = bottomSheetEntity.getPoiInfoEntities();
         bottomDesc.setText(bottomSheetEntity.getNavMenuDetailEntity().getNavMenuDetailTitle());
         bottomDesc.setBackgroundColor(context.getResources().getColor(bottomSheetEntity.getNavMenuDetailEntity().getNavMenuDetailColor()));
 
         bottomAll.setLayoutManager(new LinearLayoutManager(context));
-        BottomSheetDeAdapter bottomSheetDeAdapter = new BottomSheetDeAdapter(bottomSheetEntity.getPoiInfoEntities());
+        bottomSheetDeAdapter = new BottomSheetDeAdapter();
+//        bottomSheetDeAdapter = new BottomSheetDeAdapter(bottomPoiData);
         bottomAll.setAdapter(bottomSheetDeAdapter);
+
     }
+
+
+    private void initEvent(BottomSheetEntity bottomSheetEntity, final OnRecyclerScrollBottomListener onRecyclerScrollBottomListener) {
+        this.bottomPoiData = bottomSheetEntity.getPoiInfoEntities();
+        bottomDesc.setText(bottomSheetEntity.getNavMenuDetailEntity().getNavMenuDetailTitle());
+        bottomDesc.setBackgroundColor(context.getResources().getColor(bottomSheetEntity.getNavMenuDetailEntity().getNavMenuDetailColor()));
+        bottomAll.setLayoutManager(new LinearLayoutManager(context));
+        bottomSheetDeAdapter = new BottomSheetDeAdapter();
+//        bottomSheetDeAdapter = new BottomSheetDeAdapter(bottomPoiData);
+        bottomAll.setAdapter(bottomSheetDeAdapter);
+
+        bottomAll.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int itemCount = linearLayoutManager.getItemCount();
+                    int lastVisiblePostion = linearLayoutManager.findLastVisibleItemPosition();
+                    if (itemCount - 1 == lastVisiblePostion) {
+                        // recylerview has scroll the end ,should load more
+                        if (onRecyclerScrollBottomListener != null) {
+                            onRecyclerScrollBottomListener.recyclerScrollBottom();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+    }
+
 
     public static void bottomSheetShow(Context context, BottomSheetEntity bottomSheetEntity) {
         new BottomSheetDialogView(context, bottomSheetEntity);
     }
 
-    class BottomSheetDeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private List<MyPoiInfoEntity> recyclerData;
+    public static BottomSheetDialogView bottomSheetShow(Context context, BottomSheetEntity bottomSheetEntity, OnRecyclerScrollBottomListener onRecyclerScrollBottomListener) {
+        return new BottomSheetDialogView(context, bottomSheetEntity, onRecyclerScrollBottomListener);
+    }
 
-        public BottomSheetDeAdapter(List<MyPoiInfoEntity> recyclerData) {
-            this.recyclerData = recyclerData;
-        }
+    class BottomSheetDeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+//        private List<MyPoiInfoEntity> recyclerData;
+//
+//        public BottomSheetDeAdapter(List<MyPoiInfoEntity> recyclerData) {
+//            this.recyclerData = recyclerData;
+//        }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -70,7 +130,8 @@ public class BottomSheetDialogView {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            MyPoiInfoEntity currentEntity = recyclerData.get(position);
+            MyPoiInfoEntity currentEntity = bottomPoiData.get(position);
+//            MyPoiInfoEntity currentEntity = recyclerData.get(position);
             BottomVH bottomVH = (BottomVH) holder;
             bottomVH.bottomIcon.setImageResource(currentEntity.getNavMenuDetailEntity().getNavMenuDetailIcon());
             bottomVH.bottomName.setText(currentEntity.getPoiInfo().name);
@@ -81,7 +142,8 @@ public class BottomSheetDialogView {
 
         @Override
         public int getItemCount() {
-            return recyclerData.size();
+            return bottomPoiData.size();
+//            return recyclerData.size();
         }
 
         class BottomVH extends RecyclerView.ViewHolder {
@@ -99,6 +161,11 @@ public class BottomSheetDialogView {
                 ButterKnife.bind(this, itemView);
             }
         }
+    }
+
+    public void notifyBottomSheetData(List<MyPoiInfoEntity> myPoiInfoEntities) {
+        this.bottomPoiData = myPoiInfoEntities;
+        bottomSheetDeAdapter.notifyDataSetChanged();
     }
 
 }

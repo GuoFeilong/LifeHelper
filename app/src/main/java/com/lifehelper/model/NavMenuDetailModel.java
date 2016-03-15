@@ -76,6 +76,7 @@ public class NavMenuDetailModel {
         tempDiff.add("足疗");
         tempDiff.add("按摩");
         tempDiff.add("酒吧");
+        tempDiff.add("影院");
 
         tempNavDe.setNavMenuDetailList(tempDiff);
         navMenuDetailEntityList.add(tempNavDe);
