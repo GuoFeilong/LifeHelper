@@ -79,6 +79,7 @@ import com.lifehelper.tools.Logger;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.Tools;
 import com.lifehelper.ui.customwidget.BottomSheetDialogView;
+import com.lifehelper.ui.customwidget.LoadingDialog;
 import com.lifehelper.ui.customwidget.MapStateView;
 import com.lifehelper.view.NavMenuDetailView;
 import com.lifehelper.view.NavMenuView;
@@ -121,6 +122,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private OnNavPopClickListener mOnNavPopClickListener;
     private View popView;
     private List<NavMenuDetailEntity> mNavMenuDetails;
+    private LoadingDialog mLoadingDialog;
 
     @OnClick(R.id.iv_route_line)
     void routeLine() {
@@ -207,15 +209,15 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         mOnNavPopClickListener = new OnNavPopClickListener() {
             @Override
             public void onPopHeaderClick(NavMenuDetailEntity popItemDesc) {
-                T.show(MainActivity.this, "全部:" + popItemDesc.getNavMenuDetailDesc(), 0);
                 mNavPopupWindow.dismiss();
+                mLoadingDialog.show();
                 testPOI(mCurrentCenpt, popItemDesc.getNavMenuDetailDesc(), 0, true, popItemDesc);
             }
 
             @Override
             public void onPopDeItemClick(String popItemName, NavMenuDetailEntity forGetUI) {
-                T.show(MainActivity.this, "附近的:" + popItemName, 0);
                 mNavPopupWindow.dismiss();
+                mLoadingDialog.show();
                 testPOI(mCurrentCenpt, popItemName, 0, false, forGetUI);
             }
         };
@@ -376,6 +378,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @Override
     protected void initView() {
+        mLoadingDialog = new LoadingDialog(this, false);
         ButterKnife.bind(this);
     }
 
@@ -555,6 +558,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         });
         OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener() {
             public void onGetPoiResult(PoiResult result) {
+                mLoadingDialog.dismiss();
                 //获取POI检索结果
                 if (result == null
                         || result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
