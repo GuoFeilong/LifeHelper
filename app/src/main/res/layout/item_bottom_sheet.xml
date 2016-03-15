@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_vertical_margin">
+
+
+    <ImageView
+        android:id="@+id/iv_item_bottom_sheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/icon_nearby_food_normal" />
+
+    <TextView
+        android:id="@+id/tv_item_bottom_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:drawableLeft="@mipmap/bg_location"
+        android:gravity="center_vertical"
+        android:textColor="@color/color_orange"
+        android:textSize="@dimen/comment_text_size_middle" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_item_bottom_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/activity_vertical_margin_big"
+        android:layout_toLeftOf="@id/tv_item_bottom_distance"
+        android:layout_toRightOf="@id/iv_item_bottom_sheet"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_item_bottom_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/comment_text_size_middle"
+            android:textStyle="bold" />
+
+        <com.lifehelper.ui.customwidget.MarqueeTextView
+            android:id="@+id/tv_item_bottom_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin_middle"
+            android:singleLine="true"
+            android:textColor="@color/common_text_color"
+            android:textSize="@dimen/comment_text_size" />
+
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/ll_item_bottom_container"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:src="@color/common_line" />
+
+
+</RelativeLayout>

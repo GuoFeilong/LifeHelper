@@ -10,6 +10,9 @@ public class MyPoiInfoEntity {
     // UNIT M
     private double distance2MyLocation;
 
+    // FOR GET UI ATTR
+    private NavMenuDetailEntity navMenuDetailEntity;
+
     public PoiInfo getPoiInfo() {
         return poiInfo;
     }
@@ -24,5 +27,13 @@ public class MyPoiInfoEntity {
 
     public void setDistance2MyLocation(double distance2MyLocation) {
         this.distance2MyLocation = distance2MyLocation;
+    }
+
+    public NavMenuDetailEntity getNavMenuDetailEntity() {
+        return navMenuDetailEntity;
+    }
+
+    public void setNavMenuDetailEntity(NavMenuDetailEntity navMenuDetailEntity) {
+        this.navMenuDetailEntity = navMenuDetailEntity;
     }
 }

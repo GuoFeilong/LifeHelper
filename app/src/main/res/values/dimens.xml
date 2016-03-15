@@ -15,4 +15,5 @@
     <dimen name="nav_header_bigicon_size">65dp</dimen>
     <dimen name="comment_text_headersize_big">16sp</dimen>
     <dimen name="pop_line_height">30dp</dimen>
+    <dimen name="activity_vertical_margin_middle">8dp</dimen>
 </resources>

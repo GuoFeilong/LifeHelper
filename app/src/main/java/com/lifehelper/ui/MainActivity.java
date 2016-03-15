@@ -209,28 +209,40 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             public void onPopHeaderClick(NavMenuDetailEntity popItemDesc) {
                 T.show(MainActivity.this, "全部:" + popItemDesc.getNavMenuDetailDesc(), 0);
                 mNavPopupWindow.dismiss();
-                testPOI(mCurrentCenpt, popItemDesc.getNavMenuDetailDesc(), 0, true);
+                testPOI(mCurrentCenpt, popItemDesc.getNavMenuDetailDesc(), 0, true, popItemDesc);
 
-                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
-                bottomSheetEntity.setNavMenuDetailEntity(popItemDesc);
-                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
-                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
+//                addUI2MyPoiEntity(popItemDesc);
+//                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
+//                bottomSheetEntity.setNavMenuDetailEntity(popItemDesc);
+//                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
+//                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
             }
 
             @Override
             public void onPopDeItemClick(String popItemName, NavMenuDetailEntity forGetUI) {
                 T.show(MainActivity.this, "附近的:" + popItemName, 0);
                 mNavPopupWindow.dismiss();
-                testPOI(mCurrentCenpt, popItemName, 0, false);
+                testPOI(mCurrentCenpt, popItemName, 0, false, forGetUI);
 
-
-                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
-                forGetUI.setNavMenuDetailTitle(popItemName);
-                bottomSheetEntity.setNavMenuDetailEntity(forGetUI);
-                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
-                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
+//                addUI2MyPoiEntity(forGetUI);
+//                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
+//                forGetUI.setNavMenuDetailTitle(popItemName);
+//                bottomSheetEntity.setNavMenuDetailEntity(forGetUI);
+//                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
+//                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
             }
         };
+    }
+
+    /**
+     * for get UI property
+     *
+     * @param popItemDesc
+     */
+    private void addUI2MyPoiEntity(NavMenuDetailEntity popItemDesc) {
+        for (int i = 0; i < mPoiInfoEntities.size(); i++) {
+            mPoiInfoEntities.get(i).setNavMenuDetailEntity(popItemDesc);
+        }
     }
 
     /**
@@ -535,7 +547,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     /**
      * 兴趣点测试
      */
-    private void testPOI(final LatLng latLng, String nearByPoiName, int pageNum, boolean isAllCity) {
+    private void testPOI(final LatLng latLng, final String nearByPoiName, int pageNum, final boolean isAllCity, final NavMenuDetailEntity forGetUI) {
         mPoiSearch = PoiSearch.newInstance();
         mSuggestionSearch = SuggestionSearch.newInstance();
         mSuggestionSearch.setOnGetSuggestionResultListener(new OnGetSuggestionResultListener() {
@@ -590,6 +602,18 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
                     //改变地图状态
                     mBaiduMap.animateMapStatus(mMapStatusUpdate);
+
+
+                    addUI2MyPoiEntity(forGetUI);
+                    BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
+                    if (!isAllCity) {
+                        forGetUI.setNavMenuDetailTitle(nearByPoiName);
+                    }
+                    bottomSheetEntity.setNavMenuDetailEntity(forGetUI);
+                    bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
+                    BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
+
+
                     return;
                 }
                 if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
