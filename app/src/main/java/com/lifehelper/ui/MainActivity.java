@@ -219,14 +219,14 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         mOnNavPopClickListener = new OnNavPopClickListener() {
             @Override
             public void onPopHeaderClick(NavMenuDetailEntity popItemDesc) {
-                mNavPopupWindow.dismiss();
+//                mNavPopupWindow.dismiss();
                 mLoadingDialog.show();
                 testPOI(mCurrentCenpt, popItemDesc.getNavMenuDetailDesc(), 0, true, popItemDesc);
             }
 
             @Override
             public void onPopDeItemClick(String popItemName, NavMenuDetailEntity forGetUI) {
-                mNavPopupWindow.dismiss();
+//                mNavPopupWindow.dismiss();
                 mLoadingDialog.show();
                 testPOI(mCurrentCenpt, popItemName, 0, false, forGetUI);
             }
