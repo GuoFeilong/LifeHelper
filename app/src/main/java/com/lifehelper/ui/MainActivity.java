@@ -218,10 +218,17 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             }
 
             @Override
-            public void onPopDeItemClick(String popItemName) {
+            public void onPopDeItemClick(String popItemName, NavMenuDetailEntity forGetUI) {
                 T.show(MainActivity.this, "附近的:" + popItemName, 0);
                 mNavPopupWindow.dismiss();
                 testPOI(mCurrentCenpt, popItemName, 0, false);
+
+
+                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
+                forGetUI.setNavMenuDetailTitle(popItemName);
+                bottomSheetEntity.setNavMenuDetailEntity(forGetUI);
+                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
+                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
             }
         };
     }
@@ -250,7 +257,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     public interface OnNavPopClickListener {
         void onPopHeaderClick(NavMenuDetailEntity popItemDesc);
 
-        void onPopDeItemClick(String popItemName);
+        void onPopDeItemClick(String popItemName, NavMenuDetailEntity forGetUI);
     }
 
     /**
@@ -343,7 +350,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onNavPopClickListener.onPopDeItemClick(currentItemName);
+                            onNavPopClickListener.onPopDeItemClick(currentItemName, navMenuDetailEntity);
                         }
                     });
                 }
@@ -385,6 +392,8 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         mMapStateView.setmOnMapStateViewClickListener(new MapStateView.OnMapStateViewClickListener() {
             @Override
             public void mapStateViewClick(int currentState) {
+
+
                 if (currentState == MapStateView.MAP_STATE.NORMAL) {
                     modifyMapOverLay(mCurrentCenpt, mBaiduMap, -60.f);
                     MyLocationConfiguration.LocationMode locationMode = MyLocationConfiguration.LocationMode.COMPASS;
@@ -398,6 +407,14 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     mBaiduMap.getUiSettings().setCompassEnabled(false);
                     mMapStateView.setmCurrentState(MapStateView.MAP_STATE.NORMAL);
                 }
+
+                //定位后是否恢复原始的缩放比例
+//                MapStatus mMapStatus = new MapStatus.Builder()
+//                        .target(mCurrentCenpt)
+//                        .zoom(17)
+//                        .build();
+//                MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+//                mBaiduMap.animateMapStatus(mMapStatusUpdate);
             }
         });
 
