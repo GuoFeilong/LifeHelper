@@ -21,7 +21,7 @@
         android:drawableLeft="@mipmap/bg_location"
         android:gravity="center_vertical"
         android:textColor="@color/color_orange"
-        android:textSize="@dimen/comment_text_size_middle" />
+        android:textSize="@dimen/comment_text_size" />
 
 
     <LinearLayout

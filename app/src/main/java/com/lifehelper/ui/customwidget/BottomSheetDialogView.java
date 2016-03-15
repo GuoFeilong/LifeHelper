@@ -75,7 +75,7 @@ public class BottomSheetDialogView {
             bottomVH.bottomIcon.setImageResource(currentEntity.getNavMenuDetailEntity().getNavMenuDetailIcon());
             bottomVH.bottomName.setText(currentEntity.getPoiInfo().name);
             bottomVH.bottomAddress.setText(currentEntity.getPoiInfo().address);
-            bottomVH.bottomDistance.setText(String.format("%.1f", currentEntity.getDistance2MyLocation() / 1000) + "千米");
+            bottomVH.bottomDistance.setText(String.format("%.1f", currentEntity.getDistance2MyLocation() / 1000) + "KM");
             bottomVH.bottomDistance.setTextColor(context.getResources().getColor(currentEntity.getNavMenuDetailEntity().getNavMenuDetailColor()));
         }
 

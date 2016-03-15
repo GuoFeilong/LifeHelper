@@ -13,7 +13,7 @@ import java.util.List;
 public class NavMenuDetailModel {
     public List<NavMenuDetailEntity> getNavMenuDetailData() {
         List<NavMenuDetailEntity> navMenuDetailEntityList = new ArrayList<>();
-        List<String> tempDiff = new ArrayList<>();
+        ArrayList<String> tempDiff = new ArrayList<>();
 
         NavMenuDetailEntity tempNavDe = new NavMenuDetailEntity();
         tempNavDe.setNavMenuDetailTitle("发现 . 美食");

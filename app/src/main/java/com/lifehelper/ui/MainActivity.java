@@ -210,12 +210,6 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                 T.show(MainActivity.this, "全部:" + popItemDesc.getNavMenuDetailDesc(), 0);
                 mNavPopupWindow.dismiss();
                 testPOI(mCurrentCenpt, popItemDesc.getNavMenuDetailDesc(), 0, true, popItemDesc);
-
-//                addUI2MyPoiEntity(popItemDesc);
-//                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
-//                bottomSheetEntity.setNavMenuDetailEntity(popItemDesc);
-//                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
-//                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
             }
 
             @Override
@@ -223,13 +217,6 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                 T.show(MainActivity.this, "附近的:" + popItemName, 0);
                 mNavPopupWindow.dismiss();
                 testPOI(mCurrentCenpt, popItemName, 0, false, forGetUI);
-
-//                addUI2MyPoiEntity(forGetUI);
-//                BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
-//                forGetUI.setNavMenuDetailTitle(popItemName);
-//                bottomSheetEntity.setNavMenuDetailEntity(forGetUI);
-//                bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
-//                BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
             }
         };
     }
@@ -603,13 +590,16 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     //改变地图状态
                     mBaiduMap.animateMapStatus(mMapStatusUpdate);
 
+                    // deep clone
+                    NavMenuDetailEntity temp = forGetUI.clone();
 
-                    addUI2MyPoiEntity(forGetUI);
+
+                    addUI2MyPoiEntity(temp);
                     BottomSheetEntity bottomSheetEntity = new BottomSheetEntity();
                     if (!isAllCity) {
-                        forGetUI.setNavMenuDetailTitle(nearByPoiName);
+                        temp.setNavMenuDetailTitle(nearByPoiName);
                     }
-                    bottomSheetEntity.setNavMenuDetailEntity(forGetUI);
+                    bottomSheetEntity.setNavMenuDetailEntity(temp);
                     bottomSheetEntity.setPoiInfoEntities(mPoiInfoEntities);
                     BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
 

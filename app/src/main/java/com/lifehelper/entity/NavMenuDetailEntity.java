@@ -1,16 +1,17 @@
 package com.lifehelper.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by jsion on 16/3/13.
+ * Prototype deep copy
  */
-public class NavMenuDetailEntity {
+public class NavMenuDetailEntity implements Cloneable {
     private String navMenuDetailTitle;
     private String navMenuDetailDesc;
     private int navMenuDetailIcon;
     private int navMenuDetailColor;
-    private List<String> navMenuDetailList;
+    private ArrayList<String> navMenuDetailList;
     private int navMenuDetaType;
 
     public int getNavMenuDetaType() {
@@ -53,11 +54,31 @@ public class NavMenuDetailEntity {
         this.navMenuDetailColor = navMenuDetailColor;
     }
 
-    public List<String> getNavMenuDetailList() {
+    public ArrayList<String> getNavMenuDetailList() {
         return navMenuDetailList;
     }
 
-    public void setNavMenuDetailList(List<String> navMenuDetailList) {
+    public void setNavMenuDetailList(ArrayList<String> navMenuDetailList) {
         this.navMenuDetailList = navMenuDetailList;
+    }
+
+    @Override
+    public NavMenuDetailEntity clone() {
+        try {
+            NavMenuDetailEntity cloneEntity = (NavMenuDetailEntity) super.clone();
+            cloneEntity.navMenuDetailTitle = this.navMenuDetailTitle;
+            cloneEntity.navMenuDetailDesc = this.navMenuDetailDesc;
+            cloneEntity.navMenuDetailIcon = this.navMenuDetailIcon;
+            cloneEntity.navMenuDetailColor = this.navMenuDetailColor;
+            cloneEntity.navMenuDetaType = this.navMenuDetaType;
+
+            // if property is object,so need deep copy
+
+            cloneEntity.navMenuDetailList = (ArrayList<String>) this.navMenuDetailList.clone();
+            return cloneEntity;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
