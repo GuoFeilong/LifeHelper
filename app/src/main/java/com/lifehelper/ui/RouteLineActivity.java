@@ -92,6 +92,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
                 public void onTabSelected(TabLayout.Tab tab) {
                     FragmentManager fm = getFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
+                    // TODO: 16/3/16 分析map界面fragment类型 
                     switch ((int) tab.getTag()) {
                         case TAB_TYPE._BUS:
                             ft.replace(R.id.fl_fragment_container, mRouteLineBusFragment);
