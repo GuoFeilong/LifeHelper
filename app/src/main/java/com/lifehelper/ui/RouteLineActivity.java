@@ -1,5 +1,7 @@
 package com.lifehelper.ui;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
@@ -8,7 +10,9 @@ import android.view.MenuItem;
 import com.lifehelper.R;
 import com.lifehelper.entity.RoutLineTabEntity;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
-import com.lifehelper.tools.T;
+import com.lifehelper.ui.fragment.RouteLineBusFragment;
+import com.lifehelper.ui.fragment.RouteLineCarFragment;
+import com.lifehelper.ui.fragment.RouteLineWalkFragment;
 import com.lifehelper.view.RouteLineTabView;
 
 import java.util.List;
@@ -25,6 +29,9 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
     @Bind(R.id.tab_layout)
     TabLayout mTabLayout;
     private RouteLinePresenterImpl mPresenter;
+    private RouteLineBusFragment mRouteLineBusFragment;
+    private RouteLineWalkFragment mRouteLineWalkFragment;
+    private RouteLineCarFragment mRouteLineCarFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,14 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
     @Override
     protected void initView() {
         ButterKnife.bind(this);
+        FragmentManager mFM = getFragmentManager();
+        FragmentTransaction mFT = mFM.beginTransaction();
+        mRouteLineBusFragment = new RouteLineBusFragment();
+        mRouteLineWalkFragment = new RouteLineWalkFragment();
+        mRouteLineCarFragment = new RouteLineCarFragment();
+        mFT.replace(R.id.fl_fragment_container, mRouteLineBusFragment);
+        mFT.commit();
+
     }
 
     @Override
@@ -75,7 +90,20 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
             mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    T.show(RouteLineActivity.this, tab.getText() + "++++" + (int) tab.getTag(), 0);
+                    FragmentManager fm = getFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    switch ((int) tab.getTag()) {
+                        case TAB_TYPE._BUS:
+                            ft.replace(R.id.fl_fragment_container, mRouteLineBusFragment);
+                            break;
+                        case TAB_TYPE._WALK:
+                            ft.replace(R.id.fl_fragment_container, mRouteLineWalkFragment);
+                            break;
+                        case TAB_TYPE._CAR:
+                            ft.replace(R.id.fl_fragment_container, mRouteLineCarFragment);
+                            break;
+                    }
+                    ft.commit();
                 }
 
                 @Override
