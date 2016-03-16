@@ -78,6 +78,7 @@ import com.lifehelper.presenter.impl.NavMenuPresenterImpl;
 import com.lifehelper.tools.Logger;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.Tools;
+import com.lifehelper.tools.ViewUtils;
 import com.lifehelper.ui.customwidget.BottomSheetDialogView;
 import com.lifehelper.ui.customwidget.LoadingDialog;
 import com.lifehelper.ui.customwidget.MapStateView;
@@ -134,7 +135,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @OnClick(R.id.iv_route_line)
     void routeLine() {
-        T.show(this, "测试", 0);
+        ViewUtils.changeActivity(this, RouteLineActivity.class);
     }
 
     private BaiduMap mBaiduMap;

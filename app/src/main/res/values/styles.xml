@@ -16,6 +16,8 @@
     </style>
 
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="ToolBarStyle" parent="Theme.AppCompat.Light.DarkActionBar">
         <!--Toolbar背景色-->
         <item name="colorPrimary">@android:color/transparent</item>
@@ -26,7 +28,6 @@
         <item name="actionMenuTextColor">@android:color/holo_green_light</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
-
 
     <style name="DrawerArrowStyle" parent="Base.Widget.AppCompat.DrawerArrowToggle">
         <!--次級界面arrow顏色-->
