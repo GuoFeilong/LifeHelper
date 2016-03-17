@@ -2,7 +2,74 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/skin_colorAccent_indigo"
+    android:background="@color/common_background"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_vertical_margin">
+
+        <ImageView
+            android:id="@+id/iv_switch_location"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:src="@mipmap/icon_switch_normal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_start_location"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/et_height"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/bg_green_point"
+                android:drawablePadding="@dimen/activity_vertical_margin"
+                android:focusableInTouchMode="false"
+                android:singleLine="true"
+                android:text="@string/my_address"
+                android:textColor="@color/common_text_color"
+                android:textSize="@dimen/comment_text_size_middle" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/common_line" />
+
+            <EditText
+                android:id="@+id/et_end_location"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/et_height"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/bg_red_point"
+                android:drawablePadding="@dimen/activity_vertical_margin"
+                android:focusableInTouchMode="false"
+                android:hint="@string/input_target_address"
+                android:singleLine="true"
+                android:textColor="@color/common_text_color"
+                android:textSize="@dimen/comment_text_size_middle" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/common_line" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rlv_route_line_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

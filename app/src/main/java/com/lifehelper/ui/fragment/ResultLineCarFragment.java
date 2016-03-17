@@ -26,11 +26,6 @@ public class ResultLineCarFragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

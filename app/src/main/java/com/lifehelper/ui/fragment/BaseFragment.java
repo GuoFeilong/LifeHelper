@@ -17,15 +17,20 @@ public abstract class BaseFragment extends Fragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+
     public void init() {
         initData();
-        initView();
         initEvent();
     }
 
     public abstract void initData();
 
-    public abstract void initView();
-
     public abstract void initEvent();
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initEvent();
+    }
 }

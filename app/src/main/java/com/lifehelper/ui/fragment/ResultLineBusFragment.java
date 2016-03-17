@@ -26,11 +26,6 @@ public class ResultLineBusFragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

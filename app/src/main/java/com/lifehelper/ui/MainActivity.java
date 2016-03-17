@@ -135,7 +135,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @OnClick(R.id.iv_route_line)
     void routeLine() {
-        ViewUtils.changeActivity(this, RouteLineActivity.class);
+        ViewUtils.changeActivity(this, RouteLineActivity.class,mCurrentCenpt);
     }
 
     private BaiduMap mBaiduMap;
@@ -542,7 +542,6 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(mToggle);
         mToggle.syncState();
-//        mDrawerLayout.setDrawerListener(this);
     }
 
     /**

@@ -2,16 +2,23 @@ package com.lifehelper.ui;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
 import com.lifehelper.R;
+import com.lifehelper.app.MyConstance;
 import com.lifehelper.entity.RoutLineTabEntity;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
+import com.lifehelper.tools.Logger;
+import com.lifehelper.tools.ViewUtils;
 import com.lifehelper.ui.fragment.ResultLineBusFragment;
 import com.lifehelper.ui.fragment.ResultLineCarFragment;
 import com.lifehelper.ui.fragment.ResultLineWalkFragment;
@@ -27,7 +34,7 @@ import butterknife.OnClick;
 /**
  * Created by jsion on 16/3/16.
  */
-public class RouteLineActivity extends BaseActivity implements RouteLineTabView {
+public class RouteLineActivity extends BaseActivity implements RouteLineTabView, RouteLineLocationFragment.OnGetFragmentValueListener {
     @Bind(R.id.toolbar_route_line)
     Toolbar mToolbar;
     @Bind(R.id.tab_layout)
@@ -41,6 +48,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
     private ResultLineCarFragment mResultLineCarFragment;
     private RouteLineLocationFragment mRouteLineLocationFragment;
     private int mCurrentTabType;
+    private LatLng mCurrentLatLng;
 
     @OnClick(R.id.tv_route_line_search)
     void routeLineSearch() {
@@ -57,8 +65,22 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
 
     @Override
     protected void initData() {
+        getIntentData();
         mCurrentTabType = TAB_TYPE._BUS;
         mPresenter = new RouteLinePresenterImpl(this);
+    }
+
+    /**
+     * get intent data
+     */
+    private void getIntentData() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                mCurrentLatLng = bundle.getParcelable(MyConstance.CURRENT_LOCATION);
+            }
+        }
     }
 
     @Override
@@ -176,10 +198,47 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
         ft.commit();
     }
 
+    @Override
+    public void startAddChanged(String startAdd) {
+        Logger.e("出发地:" + startAdd);
+    }
+
+    @Override
+    public void targetAddChanged(String targetAdd) {
+        Logger.e("目的地:" + targetAdd);
+    }
+
     public static class TAB_TYPE {
         public static final int _BUS = 32;
         public static final int _WALK = 33;
         public static final int _CAR = 34;
 
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && isShouldHideInput(getCurrentFocus(), ev)) {
+            ViewUtils.hideSolftInput(this);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] leftTop = {0, 0};
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right && event.getY() > top && event.getY() < bottom) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 }

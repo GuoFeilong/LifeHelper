@@ -18,6 +18,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -27,6 +28,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.lifehelper.app.MyConstance;
 
 import java.util.List;
 
@@ -70,8 +72,11 @@ public class ViewUtils {
         context.startActivity(intent);
     }
 
-
-
+    public static <T> void changeActivity(Context context, Class<T> clazz, Parcelable parcelable) {
+        Intent intent = new Intent(context, clazz);
+        intent.putExtra(MyConstance.CURRENT_LOCATION, parcelable);
+        context.startActivity(intent);
+    }
 
     /**
      * sp --> px

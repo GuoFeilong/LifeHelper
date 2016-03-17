@@ -26,12 +26,8 @@ public class ResultLineWalkFragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }
+
 }
