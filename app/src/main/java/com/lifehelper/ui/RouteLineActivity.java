@@ -6,19 +6,23 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.lifehelper.R;
 import com.lifehelper.entity.RoutLineTabEntity;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
-import com.lifehelper.ui.fragment.RouteLineBusFragment;
-import com.lifehelper.ui.fragment.RouteLineCarFragment;
-import com.lifehelper.ui.fragment.RouteLineWalkFragment;
+import com.lifehelper.ui.fragment.ResultLineBusFragment;
+import com.lifehelper.ui.fragment.ResultLineCarFragment;
+import com.lifehelper.ui.fragment.ResultLineWalkFragment;
+import com.lifehelper.ui.fragment.RouteLineLocationFragment;
 import com.lifehelper.view.RouteLineTabView;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by jsion on 16/3/16.
@@ -28,10 +32,21 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
     Toolbar mToolbar;
     @Bind(R.id.tab_layout)
     TabLayout mTabLayout;
+    @Bind(R.id.tv_route_line_search)
+    TextView mRouteLineSearch;
+
     private RouteLinePresenterImpl mPresenter;
-    private RouteLineBusFragment mRouteLineBusFragment;
-    private RouteLineWalkFragment mRouteLineWalkFragment;
-    private RouteLineCarFragment mRouteLineCarFragment;
+    private ResultLineBusFragment mResultLineBusFragment;
+    private ResultLineWalkFragment mResultLineWalkFragment;
+    private ResultLineCarFragment mResultLineCarFragment;
+    private RouteLineLocationFragment mRouteLineLocationFragment;
+    private int mCurrentTabType;
+
+    @OnClick(R.id.tv_route_line_search)
+    void routeLineSearch() {
+        replaceResultFragment(mCurrentTabType);
+        mRouteLineSearch.setVisibility(View.INVISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +57,21 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
 
     @Override
     protected void initData() {
+        mCurrentTabType = TAB_TYPE._BUS;
         mPresenter = new RouteLinePresenterImpl(this);
     }
 
     @Override
     protected void initView() {
         ButterKnife.bind(this);
+        mRouteLineLocationFragment = new RouteLineLocationFragment();
+        mResultLineBusFragment = new ResultLineBusFragment();
+        mResultLineWalkFragment = new ResultLineWalkFragment();
+        mResultLineCarFragment = new ResultLineCarFragment();
+
         FragmentManager mFM = getFragmentManager();
         FragmentTransaction mFT = mFM.beginTransaction();
-        mRouteLineBusFragment = new RouteLineBusFragment();
-        mRouteLineWalkFragment = new RouteLineWalkFragment();
-        mRouteLineCarFragment = new RouteLineCarFragment();
-        mFT.replace(R.id.fl_fragment_container, mRouteLineBusFragment);
+        mFT.replace(R.id.fl_fragment_container, mRouteLineLocationFragment);
         mFT.commit();
 
     }
@@ -74,7 +92,15 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            if (mRouteLineSearch.getVisibility() == View.VISIBLE) {
+                onBackPressed();
+            } else {
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.fl_fragment_container, mRouteLineLocationFragment);
+                ft.commit();
+                mRouteLineSearch.setVisibility(View.VISIBLE);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -90,21 +116,28 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
             mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    FragmentManager fm = getFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    // TODO: 16/3/16 分析map界面fragment类型 
+
                     switch ((int) tab.getTag()) {
                         case TAB_TYPE._BUS:
-                            ft.replace(R.id.fl_fragment_container, mRouteLineBusFragment);
+                            mCurrentTabType = (int) tab.getTag();
+                            if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
+                                replaceResultFragment(mCurrentTabType);
+                            }
                             break;
                         case TAB_TYPE._WALK:
-                            ft.replace(R.id.fl_fragment_container, mRouteLineWalkFragment);
+                            mCurrentTabType = (int) tab.getTag();
+                            if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
+                                replaceResultFragment(mCurrentTabType);
+                            }
                             break;
                         case TAB_TYPE._CAR:
-                            ft.replace(R.id.fl_fragment_container, mRouteLineCarFragment);
+                            mCurrentTabType = (int) tab.getTag();
+                            if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
+                                replaceResultFragment(mCurrentTabType);
+                            }
                             break;
                     }
-                    ft.commit();
+
                 }
 
                 @Override
@@ -119,6 +152,28 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView 
             });
         }
 
+    }
+
+    /**
+     * based on tab_type replace current result fragment
+     *
+     * @param tag
+     */
+    private void replaceResultFragment(int tag) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        switch (tag) {
+            case TAB_TYPE._BUS:
+                ft.replace(R.id.fl_fragment_container, mResultLineBusFragment);
+                break;
+            case TAB_TYPE._WALK:
+                ft.replace(R.id.fl_fragment_container, mResultLineWalkFragment);
+                break;
+            case TAB_TYPE._CAR:
+                ft.replace(R.id.fl_fragment_container, mResultLineCarFragment);
+                break;
+        }
+        ft.commit();
     }
 
     public static class TAB_TYPE {

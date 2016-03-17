@@ -9,13 +9,13 @@ import android.view.ViewGroup;
 import com.lifehelper.R;
 
 /**
- * Created by jsion on 16/3/16.
+ * Created by jsion on 16/3/17.
  */
-public class RouteLineCarFragment extends BaseFragment {
+public class RouteLineLocationFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_route_line_car, container, false);
+        View view = inflater.inflate(R.layout.fragment_route_line_location, container, false);
         init();
         return view;
     }

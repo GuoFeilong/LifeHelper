@@ -11,11 +11,11 @@ import com.lifehelper.R;
 /**
  * Created by jsion on 16/3/16.
  */
-public class RouteLineWalkFragment extends BaseFragment {
+public class ResultLineBusFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_route_line_walk, container, false);
+        View view = inflater.inflate(R.layout.fragment_route_line_bus, container, false);
         init();
         return view;
     }
