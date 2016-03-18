@@ -3,6 +3,7 @@ package com.lifehelper.ui;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
@@ -24,8 +25,6 @@ import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.ViewUtils;
 import com.lifehelper.ui.fragment.ResultLineBusFragment;
-import com.lifehelper.ui.fragment.ResultLineCarFragment;
-import com.lifehelper.ui.fragment.ResultLineWalkFragment;
 import com.lifehelper.ui.fragment.RouteLineLocationFragment;
 import com.lifehelper.view.RouteLineTabView;
 
@@ -48,8 +47,8 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
 
     private RouteLinePresenterImpl mPresenter;
     private ResultLineBusFragment mResultLineBusFragment;
-    private ResultLineWalkFragment mResultLineWalkFragment;
-    private ResultLineCarFragment mResultLineCarFragment;
+    //    private ResultLineBusFragment mResultLineWalkFragment;
+//    private ResultLineBusFragment mResultLineCarFragment;
     private RouteLineLocationFragment mRouteLineLocationFragment;
     private int mCurrentTabType;
     private BDLocation mCurrentBDLoation;
@@ -66,19 +65,38 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         } else if (TextUtils.isEmpty(mTargetAddress)) {
             T.show(this, getResources().getString(R.string.target_add_empty), 0);
         } else {
-            replaceResultFragment(mCurrentTabType);
+//            replaceResultFragment(mCurrentTabType);
             mRouteLineSearch.setVisibility(View.INVISIBLE);
             // set fragment data
             Bundle args = new Bundle();
             args.putParcelable(MyConstance.ROUTELINE_PLANNOTES, mRoutLinePlanots);
-            mResultLineBusFragment.setArguments(args);
-            mResultLineCarFragment.setArguments(args);
-            mResultLineWalkFragment.setArguments(args);
+            switch (mCurrentTabType) {
+                case TAB_TYPE._BUS:
+                    mRoutLinePlanots.setTabType(TAB_TYPE._BUS);
+                    mResultLineBusFragment.setArguments(args);
+                    break;
+                case TAB_TYPE._CAR:
+                    mRoutLinePlanots.setTabType(TAB_TYPE._CAR);
+                    mResultLineBusFragment.setArguments(args);
+//                    mResultLineCarFragment.setArguments(args);
+                    break;
+                case TAB_TYPE._WALK:
+                    mRoutLinePlanots.setTabType(TAB_TYPE._WALK);
+                    mResultLineBusFragment.setArguments(args);
+//                    mResultLineWalkFragment.setArguments(args);
+                    break;
+            }
+
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.fl_fragment_container, mResultLineBusFragment);
+            ft.commit();
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_line);
         init();
@@ -116,8 +134,10 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         ButterKnife.bind(this);
         mRouteLineLocationFragment = new RouteLineLocationFragment();
         mResultLineBusFragment = new ResultLineBusFragment();
-        mResultLineWalkFragment = new ResultLineWalkFragment();
-        mResultLineCarFragment = new ResultLineCarFragment();
+//        mResultLineWalkFragment = new ResultLineBusFragment();
+//        mResultLineCarFragment = new ResultLineBusFragment();
+//        mResultLineWalkFragment = new ResultLineWalkFragment();
+//        mResultLineCarFragment = new ResultLineCarFragment();
 
         FragmentManager mFM = getFragmentManager();
         FragmentTransaction mFT = mFM.beginTransaction();
@@ -157,6 +177,19 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
     }
 
     @Override
+    public void onBackPressed() {
+        if (mRouteLineSearch.getVisibility() == View.VISIBLE) {
+            super.onBackPressed();
+        } else {
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.fl_fragment_container, mRouteLineLocationFragment);
+            ft.commit();
+            mRouteLineSearch.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void bindRouteLineTabs(List<RoutLineTabEntity> routLineTabEntities) {
         for (RoutLineTabEntity tabEntity : routLineTabEntities) {
             TabLayout.Tab tab = mTabLayout.newTab();
@@ -166,28 +199,10 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
             mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-
-                    switch ((int) tab.getTag()) {
-                        case TAB_TYPE._BUS:
-                            mCurrentTabType = (int) tab.getTag();
-                            if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
-                                replaceResultFragment(mCurrentTabType);
-                            }
-                            break;
-                        case TAB_TYPE._WALK:
-                            mCurrentTabType = (int) tab.getTag();
-                            if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
-                                replaceResultFragment(mCurrentTabType);
-                            }
-                            break;
-                        case TAB_TYPE._CAR:
-                            mCurrentTabType = (int) tab.getTag();
-                            if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
-                                replaceResultFragment(mCurrentTabType);
-                            }
-                            break;
+                    mCurrentTabType = (int) tab.getTag();
+                    if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
+                        replaceResultFragment(mCurrentTabType);
                     }
-
                 }
 
                 @Override
@@ -210,20 +225,37 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
      * @param tag
      */
     private void replaceResultFragment(int tag) {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = fm.beginTransaction();
+//        Bundle args = new Bundle();
+//        args.putParcelable(MyConstance.ROUTELINE_PLANNOTES, mRoutLinePlanots);
         switch (tag) {
             case TAB_TYPE._BUS:
-                ft.replace(R.id.fl_fragment_container, mResultLineBusFragment);
+                mResultLineBusFragment.differentRoutePlan(tag);
+//                mRoutLinePlanots.setTabType(tag);
+//                mResultLineBusFragment.setArguments(args);
+//                ft.replace(R.id.fl_fragment_container, mResultLineBusFragment);
                 break;
             case TAB_TYPE._WALK:
-                ft.replace(R.id.fl_fragment_container, mResultLineWalkFragment);
+                mResultLineBusFragment.differentRoutePlan(tag);
+
+//                mRoutLinePlanots.setTabType(tag);
+//                mResultLineBusFragment.setArguments(args);
+//                mResultLineWalkFragment.setArguments(args);
+//                ResultLineWalkFragment temp = new ResultLineWalkFragment();
+//                ft.replace(R.id.fl_fragment_container, temp);
+//                ft.replace(R.id.fl_fragment_container, mResultLineWalkFragment);
                 break;
             case TAB_TYPE._CAR:
-                ft.replace(R.id.fl_fragment_container, mResultLineCarFragment);
+                mResultLineBusFragment.differentRoutePlan(tag);
+
+//                mRoutLinePlanots.setTabType(tag);
+//                mResultLineBusFragment.setArguments(args);
+//                mResultLineCarFragment.setArguments(args);
+//                ft.replace(R.id.fl_fragment_container, mResultLineCarFragment);
                 break;
         }
-        ft.commit();
+//        ft.commit();
     }
 
     @Override

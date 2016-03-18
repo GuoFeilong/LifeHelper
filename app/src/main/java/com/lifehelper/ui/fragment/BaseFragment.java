@@ -39,4 +39,9 @@ public abstract class BaseFragment extends Fragment {
     public void setArguments(Bundle args) {
         super.setArguments(args);
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 }

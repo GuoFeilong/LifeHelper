@@ -36,7 +36,7 @@ public class ResultLineWalkFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mRoutLinePlanots = bundle.getParcelable(MyConstance.ROUTELINE_PLANNOTES);
-            Logger.e("TAG_WALK:" + mRoutLinePlanots.getStartPlanNode().getCity());
+            Logger.e("TAG_WALK:" + mRoutLinePlanots.getStartPlanNode().getCity()+"TAB_TYPE:"+mRoutLinePlanots.getTabType());
         }
     }
 

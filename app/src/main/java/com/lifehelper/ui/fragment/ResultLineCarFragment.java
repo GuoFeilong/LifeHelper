@@ -36,7 +36,7 @@ public class ResultLineCarFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mRoutLinePlanots = bundle.getParcelable(MyConstance.ROUTELINE_PLANNOTES);
-            Logger.e("TAG_CAR:" + mRoutLinePlanots.getStartPlanNode().getCity());
+            Logger.e("TAG_CAR:" + mRoutLinePlanots.getStartPlanNode().getCity()+"TAB_TYPE:"+mRoutLinePlanots.getTabType());
         }
     }
 
