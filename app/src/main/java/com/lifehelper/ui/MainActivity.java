@@ -132,10 +132,9 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private int bottomIndex = 1;
     private BottomSheetDialogView mBottomSheetDialogView;
     private LoadingDialog mLoadMoreDialog;
-
     @OnClick(R.id.iv_route_line)
     void routeLine() {
-        ViewUtils.changeActivity(this, RouteLineActivity.class,mCurrentCenpt);
+        ViewUtils.changeActivity(this, RouteLineActivity.class,mCurrentBDLocation);
     }
 
     private BaiduMap mBaiduMap;

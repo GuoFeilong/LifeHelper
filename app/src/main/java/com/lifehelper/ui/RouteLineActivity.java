@@ -6,18 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.route.PlanNode;
 import com.lifehelper.R;
 import com.lifehelper.app.MyConstance;
 import com.lifehelper.entity.RoutLineTabEntity;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
-import com.lifehelper.tools.Logger;
+import com.lifehelper.tools.T;
 import com.lifehelper.tools.ViewUtils;
 import com.lifehelper.ui.fragment.ResultLineBusFragment;
 import com.lifehelper.ui.fragment.ResultLineCarFragment;
@@ -48,12 +51,22 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
     private ResultLineCarFragment mResultLineCarFragment;
     private RouteLineLocationFragment mRouteLineLocationFragment;
     private int mCurrentTabType;
-    private LatLng mCurrentLatLng;
+    private BDLocation mCurrentBDLoation;
+    private PlanNode mStartNode;
+    private PlanNode mTargetNote;
+    private String mStartAddress;
+    private String mTargetAddress;
 
     @OnClick(R.id.tv_route_line_search)
     void routeLineSearch() {
-        replaceResultFragment(mCurrentTabType);
-        mRouteLineSearch.setVisibility(View.INVISIBLE);
+        if (TextUtils.isEmpty(mStartAddress)) {
+            T.show(this, getResources().getString(R.string.start_add_empty), 0);
+        } else if (TextUtils.isEmpty(mTargetAddress)) {
+            T.show(this, getResources().getString(R.string.target_add_empty), 0);
+        } else {
+            replaceResultFragment(mCurrentTabType);
+            mRouteLineSearch.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -68,6 +81,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         getIntentData();
         mCurrentTabType = TAB_TYPE._BUS;
         mPresenter = new RouteLinePresenterImpl(this);
+        mStartAddress = getResources().getString(R.string.my_address);
     }
 
     /**
@@ -78,7 +92,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         if (intent != null) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                mCurrentLatLng = bundle.getParcelable(MyConstance.CURRENT_LOCATION);
+                mCurrentBDLoation = bundle.getParcelable(MyConstance.CURRENT_LOCATION);
             }
         }
     }
@@ -200,12 +214,18 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
 
     @Override
     public void startAddChanged(String startAdd) {
-        Logger.e("出发地:" + startAdd);
+        mStartAddress = startAdd;
+        if (startAdd.equals(getResources().getString(R.string.my_address))) {
+            mStartNode = PlanNode.withLocation(new LatLng(mCurrentBDLoation.getLatitude(), mCurrentBDLoation.getLongitude()));
+        } else {
+            mStartNode = PlanNode.withCityNameAndPlaceName(mCurrentBDLoation.getCity(), startAdd);
+        }
     }
 
     @Override
     public void targetAddChanged(String targetAdd) {
-        Logger.e("目的地:" + targetAdd);
+        mTargetAddress = targetAdd;
+        mTargetNote = PlanNode.withCityNameAndPlaceName(mCurrentBDLoation.getCity(), targetAdd);
     }
 
     public static class TAB_TYPE {
