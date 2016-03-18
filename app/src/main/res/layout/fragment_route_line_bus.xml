@@ -5,18 +5,11 @@
     android:background="@color/common_background"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_map_parent"
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/fragmnt_bmapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.baidu.mapapi.map.MapView
-            android:id="@+id/fragmnt_bmapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:clickable="true" />
 
 
 </android.support.design.widget.CoordinatorLayout>

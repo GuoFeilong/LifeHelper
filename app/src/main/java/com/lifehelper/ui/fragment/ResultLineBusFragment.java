@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -39,7 +38,6 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -53,9 +51,6 @@ public class ResultLineBusFragment extends BaseFragment {
     private LoadingDialog mLoadingDialog;
     @Bind(R.id.fragmnt_bmapView)
     MapView mMapView;
-    @Bind(R.id.ll_map_parent)
-    LinearLayout mMapParent;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,38 +66,6 @@ public class ResultLineBusFragment extends BaseFragment {
 
     @Override
     public void initEvent() {
-        mMapParent.setVisibility(View.INVISIBLE);
-        Observable.interval(2, 2, TimeUnit.SECONDS)
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mLoadingDialog.show();
-                    }
-                })
-                .subscribe(new Subscriber<Long>() {
-                    @Override
-                    public void onCompleted() {
-                        mLoadingDialog.dismiss();
-                        mMapParent.setVisibility(View.VISIBLE);
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-                        if (0 == aLong.intValue()) {
-                            onCompleted();
-                            this.unsubscribe();
-                        }
-                    }
-                });
-
         Bundle bundle = getArguments();
         if (bundle != null) {
             mRoutLinePlanots = bundle.getParcelable(MyConstance.ROUTELINE_PLANNOTES);
@@ -132,6 +95,31 @@ public class ResultLineBusFragment extends BaseFragment {
     @Override
     public void initView(View view) {
         ButterKnife.bind(this, view);
+        mMapView.setVisibility(View.INVISIBLE);
+        mLoadingDialog.show();
+        Observable.interval(1, 5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        mLoadingDialog.dismiss();
+                        mMapView.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (0 == aLong.intValue()) {
+                            onCompleted();
+                            this.unsubscribe();
+                        }
+                    }
+                });
     }
 
 

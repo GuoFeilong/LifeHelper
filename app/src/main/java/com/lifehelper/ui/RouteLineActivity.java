@@ -3,7 +3,6 @@ package com.lifehelper.ui;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
@@ -96,7 +95,6 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_line);
         init();
