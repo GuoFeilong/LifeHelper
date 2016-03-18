@@ -7,16 +7,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lifehelper.R;
+import com.lifehelper.app.MyConstance;
+import com.lifehelper.entity.RoutLinePlanots;
+import com.lifehelper.tools.Logger;
 
 /**
  * Created by jsion on 16/3/16.
  */
 public class ResultLineWalkFragment extends BaseFragment {
+
+    private RoutLinePlanots mRoutLinePlanots;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_route_line_walk, container, false);
-        init();
+        init(view);
         return view;
     }
 
@@ -27,7 +33,17 @@ public class ResultLineWalkFragment extends BaseFragment {
 
     @Override
     public void initEvent() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mRoutLinePlanots = bundle.getParcelable(MyConstance.ROUTELINE_PLANNOTES);
+            Logger.e("TAG_WALK:" + mRoutLinePlanots.getStartPlanNode().getCity());
+        }
+    }
+
+    @Override
+    public void initView(View view) {
 
     }
+
 
 }

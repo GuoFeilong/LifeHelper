@@ -18,19 +18,25 @@ public abstract class BaseFragment extends Fragment {
     }
 
 
-    public void init() {
+    public void init(View view) {
         initData();
-        initEvent();
+        initView(view);
     }
 
     public abstract void initData();
 
     public abstract void initEvent();
 
+    public abstract void initView(View view);
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initEvent();
+    }
+
+    @Override
+    public void setArguments(Bundle args) {
+        super.setArguments(args);
     }
 }

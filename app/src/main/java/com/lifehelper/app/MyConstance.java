@@ -5,4 +5,5 @@ package com.lifehelper.app;
  */
 public class MyConstance {
     public static final String CURRENT_LOCATION="CURRENT_LOCATION";
+    public static final String ROUTELINE_PLANNOTES="ROUTELINE_PLANNOTES";
 }

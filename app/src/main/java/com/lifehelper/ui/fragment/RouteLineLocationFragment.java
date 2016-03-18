@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.lifehelper.R;
+import com.lifehelper.tools.T;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,6 +45,10 @@ public class RouteLineLocationFragment extends BaseFragment {
         mTargetAddress.setFocusableInTouchMode(true);
     }
 
+    @OnClick(R.id.iv_switch_location)
+    void switchStartAndTarget() {
+        T.show(getActivity(), "调换出发地和目的地", 0);
+    }
 
     public interface OnGetFragmentValueListener {
         void startAddChanged(String startAdd);
@@ -57,7 +62,7 @@ public class RouteLineLocationFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_route_line_location, container, false);
-        ButterKnife.bind(this, view);
+        init(view);
         return view;
     }
 
@@ -73,6 +78,11 @@ public class RouteLineLocationFragment extends BaseFragment {
 
         mTargetAddress.addTextChangedListener(new MyTextWatcher(mTargetAddress));
         mStartAddress.addTextChangedListener(new MyTextWatcher(mStartAddress));
+    }
+
+    @Override
+    public void initView(View view) {
+        ButterKnife.bind(this, view);
     }
 
     @Override

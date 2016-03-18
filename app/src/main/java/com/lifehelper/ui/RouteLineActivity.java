@@ -18,6 +18,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.lifehelper.R;
 import com.lifehelper.app.MyConstance;
+import com.lifehelper.entity.RoutLinePlanots;
 import com.lifehelper.entity.RoutLineTabEntity;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
 import com.lifehelper.tools.T;
@@ -54,6 +55,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
     private BDLocation mCurrentBDLoation;
     private PlanNode mStartNode;
     private PlanNode mTargetNote;
+    private RoutLinePlanots mRoutLinePlanots;
     private String mStartAddress;
     private String mTargetAddress;
 
@@ -66,6 +68,12 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         } else {
             replaceResultFragment(mCurrentTabType);
             mRouteLineSearch.setVisibility(View.INVISIBLE);
+            // set fragment data
+            Bundle args = new Bundle();
+            args.putParcelable(MyConstance.ROUTELINE_PLANNOTES, mRoutLinePlanots);
+            mResultLineBusFragment.setArguments(args);
+            mResultLineCarFragment.setArguments(args);
+            mResultLineWalkFragment.setArguments(args);
         }
     }
 
@@ -78,6 +86,8 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
 
     @Override
     protected void initData() {
+        mRoutLinePlanots = new RoutLinePlanots();
+
         getIntentData();
         mCurrentTabType = TAB_TYPE._BUS;
         mPresenter = new RouteLinePresenterImpl(this);
@@ -93,6 +103,10 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 mCurrentBDLoation = bundle.getParcelable(MyConstance.CURRENT_LOCATION);
+                if (mCurrentBDLoation != null) {
+                    mStartNode = PlanNode.withLocation(new LatLng(mCurrentBDLoation.getLatitude(), mCurrentBDLoation.getLongitude()));
+                    mRoutLinePlanots.setStartPlanNode(mStartNode);
+                }
             }
         }
     }
@@ -220,12 +234,14 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         } else {
             mStartNode = PlanNode.withCityNameAndPlaceName(mCurrentBDLoation.getCity(), startAdd);
         }
+        mRoutLinePlanots.setStartPlanNode(mStartNode);
     }
 
     @Override
     public void targetAddChanged(String targetAdd) {
         mTargetAddress = targetAdd;
         mTargetNote = PlanNode.withCityNameAndPlaceName(mCurrentBDLoation.getCity(), targetAdd);
+        mRoutLinePlanots.setTargetPlanNode(mTargetNote);
     }
 
     public static class TAB_TYPE {
