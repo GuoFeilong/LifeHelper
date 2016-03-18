@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.lifehelper.R;
 import com.lifehelper.tools.T;
+import com.lifehelper.tools.ViewUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,16 +34,23 @@ public class RouteLineLocationFragment extends BaseFragment {
     void startAddGetFocus() {
         mStartAddress.setFocusable(true);
         mStartAddress.setFocusableInTouchMode(true);
+        mStartAddress.requestFocus();
+
         mTargetAddress.setFocusable(false);
         mTargetAddress.setFocusableInTouchMode(false);
+        ViewUtils.showSoftInput(getActivity(), mStartAddress);
+
     }
 
     @OnClick(R.id.et_end_location)
     void endAddGetFocus() {
         mStartAddress.setFocusable(false);
         mStartAddress.setFocusableInTouchMode(false);
+
         mTargetAddress.setFocusable(true);
         mTargetAddress.setFocusableInTouchMode(true);
+        mTargetAddress.requestFocus();
+        ViewUtils.showSoftInput(getActivity(),mTargetAddress);
     }
 
     @OnClick(R.id.iv_switch_location)
