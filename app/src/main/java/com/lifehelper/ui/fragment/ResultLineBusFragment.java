@@ -24,8 +24,10 @@ import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.lifehelper.R;
 import com.lifehelper.app.MyConstance;
+import com.lifehelper.baidumap.DrivingRouteOverlay;
 import com.lifehelper.baidumap.MyTransitRouteOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
+import com.lifehelper.baidumap.WalkingRouteOverlay;
 import com.lifehelper.entity.RoutLinePlanots;
 import com.lifehelper.tools.Logger;
 import com.lifehelper.ui.RouteLineActivity;
@@ -51,6 +53,7 @@ public class ResultLineBusFragment extends BaseFragment {
     private LoadingDialog mLoadingDialog;
     @Bind(R.id.fragmnt_bmapView)
     MapView mMapView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class ResultLineBusFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mRoutLinePlanots = bundle.getParcelable(MyConstance.ROUTELINE_PLANNOTES);
-            Logger.e("TAG_BUS:" + mRoutLinePlanots.getStartPlanNode().getCity() + "TAB_TYPE:" + mRoutLinePlanots.getTabType());
+            Logger.e("TAG_BUS:" + mRoutLinePlanots.getTargetPlanNode().getCity() + "TAB_TYPE:" + mRoutLinePlanots.getTabType());
         }
         initBMap();
         differentRoutePlan(mRoutLinePlanots.getTabType());
@@ -143,10 +146,11 @@ public class ResultLineBusFragment extends BaseFragment {
                     return;
                 }
                 if (walkingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
-                    TransitRouteOverlay overlay = new MyTransitRouteOverlay(mBaiduMap, false);
-                    mBaiduMap.setOnMarkerClickListener(overlay);
-                    overlay.addToMap();
-                    overlay.zoomToSpan();
+                    WalkingRouteOverlay walkingRouteOverlay = new WalkingRouteOverlay(mBaiduMap);
+                    mBaiduMap.setOnMarkerClickListener(walkingRouteOverlay);
+                    walkingRouteOverlay.setData(walkingRouteResult.getRouteLines().get(0));
+                    walkingRouteOverlay.addToMap();
+                    walkingRouteOverlay.zoomToSpan();
                 }
             }
 
@@ -173,6 +177,21 @@ public class ResultLineBusFragment extends BaseFragment {
             @Override
             public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
                 mLoadingDialog.dismiss();
+                if (drivingRouteResult == null || drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
+                    Toast.makeText(getActivity(), "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+                }
+                if (drivingRouteResult.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
+                    //起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+//                    result.getSuggestAddrInfo();
+                    return;
+                }
+                if (drivingRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
+                    DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
+                    mBaiduMap.setOnMarkerClickListener(overlay);
+                    overlay.setData(drivingRouteResult.getRouteLines().get(0));
+                    overlay.addToMap();
+                    overlay.zoomToSpan();
+                }
             }
 
             @Override
