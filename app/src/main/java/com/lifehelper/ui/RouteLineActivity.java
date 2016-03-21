@@ -18,6 +18,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.lifehelper.R;
 import com.lifehelper.app.MyConstance;
+import com.lifehelper.entity.MyPoiInfroWithLocationEntity;
 import com.lifehelper.entity.RoutLinePlanots;
 import com.lifehelper.entity.RoutLineTabEntity;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
@@ -54,6 +55,8 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
     private RoutLinePlanots mRoutLinePlanots;
     private String mStartAddress;
     private String mTargetAddress;
+    private String mWhereFrom;
+    private MyPoiInfroWithLocationEntity mPoiInfroWithLocationEntity;
 
     @OnClick(R.id.tv_route_line_search)
     void routeLineSearch() {
@@ -102,7 +105,13 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         if (intent != null) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                mCurrentBDLoation = bundle.getParcelable(MyConstance.CURRENT_LOCATION);
+                mWhereFrom = bundle.getString(MyConstance.WHERE_FROM);
+                if (!TextUtils.isEmpty(mWhereFrom) && mWhereFrom.equals(MainActivity.FROM_BOTTOM_SHEET)) {
+                    mPoiInfroWithLocationEntity = bundle.getParcelable(MyConstance.CURRENT_POI_LOCATION);
+                    mCurrentBDLoation = mPoiInfroWithLocationEntity.getmLocation();
+                } else {
+                    mCurrentBDLoation = bundle.getParcelable(MyConstance.CURRENT_LOCATION);
+                }
                 if (mCurrentBDLoation != null) {
                     mStartNode = PlanNode.withLocation(new LatLng(mCurrentBDLoation.getLatitude(), mCurrentBDLoation.getLongitude()));
                     mRoutLinePlanots.setStartPlanNode(mStartNode);
@@ -135,6 +144,11 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.mipmap.abc_ic_ab_back_mtrl_am_alpha));
         }
 
+        if (!TextUtils.isEmpty(mWhereFrom) && mWhereFrom.equals(MainActivity.FROM_BOTTOM_SHEET)) {
+            Bundle args = new Bundle();
+            args.putString(MyConstance.BOTTOM_SHEET_DESC, mPoiInfroWithLocationEntity.getmPoiInfoEntity().getPoiInfo().name);
+            mRouteLineLocationFragment.setArguments(args);
+        }
     }
 
     @Override

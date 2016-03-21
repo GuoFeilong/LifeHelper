@@ -1,12 +1,15 @@
 package com.lifehelper.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by jsion on 16/3/13.
  * Prototype deep copy
  */
-public class NavMenuDetailEntity implements Cloneable {
+public class NavMenuDetailEntity implements Cloneable, Parcelable {
     private String navMenuDetailTitle;
     private String navMenuDetailDesc;
     private int navMenuDetailIcon;
@@ -81,4 +84,44 @@ public class NavMenuDetailEntity implements Cloneable {
             return null;
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.navMenuDetailTitle);
+        dest.writeString(this.navMenuDetailDesc);
+        dest.writeInt(this.navMenuDetailIcon);
+        dest.writeInt(this.navMenuDetailColor);
+        dest.writeStringList(this.navMenuDetailList);
+        dest.writeInt(this.navMenuDetaType);
+    }
+
+    public NavMenuDetailEntity() {
+    }
+
+    protected NavMenuDetailEntity(Parcel in) {
+        this.navMenuDetailTitle = in.readString();
+        this.navMenuDetailDesc = in.readString();
+        this.navMenuDetailIcon = in.readInt();
+        this.navMenuDetailColor = in.readInt();
+        this.navMenuDetailList = in.createStringArrayList();
+        this.navMenuDetaType = in.readInt();
+    }
+
+    public static final Parcelable.Creator<NavMenuDetailEntity> CREATOR = new Parcelable.Creator<NavMenuDetailEntity>() {
+        @Override
+        public NavMenuDetailEntity createFromParcel(Parcel source) {
+            return new NavMenuDetailEntity(source);
+        }
+
+        @Override
+        public NavMenuDetailEntity[] newArray(int size) {
+            return new NavMenuDetailEntity[size];
+        }
+    };
 }

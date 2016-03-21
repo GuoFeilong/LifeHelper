@@ -70,6 +70,7 @@ import com.lifehelper.baidumap.PoiOverlay;
 import com.lifehelper.baidumap.TransitRouteOverlay;
 import com.lifehelper.entity.BottomSheetEntity;
 import com.lifehelper.entity.MyPoiInfoEntity;
+import com.lifehelper.entity.MyPoiInfroWithLocationEntity;
 import com.lifehelper.entity.NavMenuDetailEntity;
 import com.lifehelper.entity.NavMenuEntity;
 import com.lifehelper.presenter.impl.NavMenuDetailPresenterImpl;
@@ -93,6 +94,7 @@ import butterknife.OnClick;
 
 
 public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusChangeListener, NavMenuView, NavMenuDetailView {
+    public static final String FROM_BOTTOM_SHEET = "FROM_BOTTOM_SHEET";
     @Bind(R.id.bmapView)
     MapView mMapView;
     @Bind(R.id.toolbar)
@@ -131,9 +133,10 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
     private int bottomIndex = 1;
     private BottomSheetDialogView mBottomSheetDialogView;
     private LoadingDialog mLoadMoreDialog;
+
     @OnClick(R.id.iv_route_line)
     void routeLine() {
-        ViewUtils.changeActivity(this, RouteLineActivity.class,mCurrentBDLocation);
+        ViewUtils.changeActivity(this, RouteLineActivity.class, mCurrentBDLocation);
     }
 
     private BaiduMap mBaiduMap;
@@ -623,6 +626,16 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                             bottomIndex++;
                         }
                     });
+
+                    mBottomSheetDialogView.setOnRecyClickListener(new BottomSheetDialogView.OnRecyClickListener() {
+                        @Override
+                        public void onReClick(MyPoiInfoEntity poiInfoEntity) {
+                            MyPoiInfroWithLocationEntity tempPoiAndLocation = new MyPoiInfroWithLocationEntity();
+                            tempPoiAndLocation.setmLocation(mCurrentBDLocation);
+                            tempPoiAndLocation.setmPoiInfoEntity(poiInfoEntity);
+                            ViewUtils.changeActivity(MainActivity.this, RouteLineActivity.class, tempPoiAndLocation, FROM_BOTTOM_SHEET);
+                        }
+                    });
 //                    BottomSheetDialogView.bottomSheetShow(MainActivity.this, bottomSheetEntity);
                     return;
                 }
@@ -914,7 +927,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     return;
                 }
                 if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-                    TransitRouteOverlay overlay = new MyTransitRouteOverlay(mBaiduMap,useDefaultIcon);
+                    TransitRouteOverlay overlay = new MyTransitRouteOverlay(mBaiduMap, useDefaultIcon);
                     mBaiduMap.setOnMarkerClickListener(overlay);
                     overlay.setData(result.getRouteLines().get(0));
                     overlay.addToMap();

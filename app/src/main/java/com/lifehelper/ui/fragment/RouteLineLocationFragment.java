@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.lifehelper.R;
+import com.lifehelper.app.MyConstance;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.ViewUtils;
 
@@ -50,7 +52,7 @@ public class RouteLineLocationFragment extends BaseFragment {
         mTargetAddress.setFocusable(true);
         mTargetAddress.setFocusableInTouchMode(true);
         mTargetAddress.requestFocus();
-        ViewUtils.showSoftInput(getActivity(),mTargetAddress);
+        ViewUtils.showSoftInput(getActivity(), mTargetAddress);
     }
 
     @OnClick(R.id.iv_switch_location)
@@ -86,6 +88,14 @@ public class RouteLineLocationFragment extends BaseFragment {
 
         mTargetAddress.addTextChangedListener(new MyTextWatcher(mTargetAddress));
         mStartAddress.addTextChangedListener(new MyTextWatcher(mStartAddress));
+
+        Bundle args = getArguments();
+        if (args != null) {
+            String desc = args.getString(MyConstance.BOTTOM_SHEET_DESC);
+            if (!TextUtils.isEmpty(desc)) {
+                mTargetAddress.setText(desc);
+            }
+        }
     }
 
     @Override

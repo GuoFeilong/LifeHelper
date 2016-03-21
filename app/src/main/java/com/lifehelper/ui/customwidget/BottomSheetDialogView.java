@@ -115,6 +115,16 @@ public class BottomSheetDialogView {
         return new BottomSheetDialogView(context, bottomSheetEntity, onRecyclerScrollBottomListener);
     }
 
+    public interface OnRecyClickListener {
+        void onReClick(MyPoiInfoEntity poiInfoEntity);
+    }
+
+    private OnRecyClickListener onRecyClickListener;
+
+    public void setOnRecyClickListener(OnRecyClickListener onRecyClickListener) {
+        this.onRecyClickListener = onRecyClickListener;
+    }
+
     class BottomSheetDeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //        private List<MyPoiInfoEntity> recyclerData;
 //
@@ -130,7 +140,7 @@ public class BottomSheetDialogView {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            MyPoiInfoEntity currentEntity = bottomPoiData.get(position);
+            final MyPoiInfoEntity currentEntity = bottomPoiData.get(position);
 //            MyPoiInfoEntity currentEntity = recyclerData.get(position);
             BottomVH bottomVH = (BottomVH) holder;
             bottomVH.bottomIcon.setImageResource(currentEntity.getNavMenuDetailEntity().getNavMenuDetailIcon());
@@ -138,6 +148,15 @@ public class BottomSheetDialogView {
             bottomVH.bottomAddress.setText(currentEntity.getPoiInfo().address);
             bottomVH.bottomDistance.setText(String.format("%.1f", currentEntity.getDistance2MyLocation() / 1000) + "KM");
             bottomVH.bottomDistance.setTextColor(context.getResources().getColor(currentEntity.getNavMenuDetailEntity().getNavMenuDetailColor()));
+
+            if (onRecyClickListener != null) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onRecyClickListener.onReClick(currentEntity);
+                    }
+                });
+            }
         }
 
         @Override

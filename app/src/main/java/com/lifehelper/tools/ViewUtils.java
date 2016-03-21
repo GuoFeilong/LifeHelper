@@ -78,6 +78,13 @@ public class ViewUtils {
         context.startActivity(intent);
     }
 
+    public static <T> void changeActivity(Context context, Class<T> clazz, Parcelable parcelable,String whereFrom) {
+        Intent intent = new Intent(context, clazz);
+        intent.putExtra(MyConstance.CURRENT_POI_LOCATION, parcelable);
+        intent.putExtra(MyConstance.WHERE_FROM,whereFrom);
+        context.startActivity(intent);
+    }
+
     /**
      * sp --> px
      */
