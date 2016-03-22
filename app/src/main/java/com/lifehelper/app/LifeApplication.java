@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.lifehelper.DaoMaster;
+import com.lifehelper.DaoSession;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -12,6 +14,8 @@ import com.squareup.leakcanary.RefWatcher;
  */
 public class LifeApplication extends Application {
     private RefWatcher refWatcher;
+    private static DaoMaster daoMaster;
+    private static DaoSession daoSession;
 
     public static RefWatcher getRefWatcher(Context context) {
         LifeApplication application = (LifeApplication) context.getApplicationContext();
@@ -22,5 +26,23 @@ public class LifeApplication extends Application {
         super.onCreate();
         SDKInitializer.initialize(getApplicationContext());
         refWatcher = LeakCanary.install(this);
+    }
+
+    public static DaoMaster getDaoMaster(Context context) {
+        if (daoMaster == null) {
+            DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(context, GreenDaoMyConstant.DB_NAME, null);
+            daoMaster = new DaoMaster(helper.getWritableDatabase());
+        }
+        return daoMaster;
+    }
+
+    public static DaoSession getDaoSession(Context context) {
+        if (daoSession == null) {
+            if (daoMaster == null) {
+                daoMaster = getDaoMaster(context);
+            }
+            daoSession = daoMaster.newSession();
+        }
+        return daoSession;
     }
 }

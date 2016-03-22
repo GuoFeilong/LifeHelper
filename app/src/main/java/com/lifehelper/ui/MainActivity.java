@@ -800,6 +800,8 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         if (mBaiduMap != null) {
             mBaiduMap.setMyLocationEnabled(false);
         }
+
+
     }
 
     /**
@@ -1181,6 +1183,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         public static final int _HAPPY = 66;
         public static final int _WHO = 77;
     }
+
 
 
 }

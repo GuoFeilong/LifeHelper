@@ -1,1 +1,1 @@
-include ':app', ':effect'
+include ':app', ':effect', ':daogenerator'

@@ -19,4 +19,5 @@
     <string name="my_address">我的位置</string>
     <string name="start_add_empty">出发地不能为空</string>
     <string name="target_add_empty">目的地不能为空</string>
+    <string name="clear_route_line_history">清除历史记录</string>
 </resources>

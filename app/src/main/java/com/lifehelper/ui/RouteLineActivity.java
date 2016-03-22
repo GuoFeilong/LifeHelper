@@ -16,16 +16,20 @@ import android.widget.TextView;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.PlanNode;
+import com.lifehelper.PlanNodeTable;
 import com.lifehelper.R;
+import com.lifehelper.RouteLineNodeTable;
 import com.lifehelper.app.MyConstance;
 import com.lifehelper.entity.MyPoiInfroWithLocationEntity;
 import com.lifehelper.entity.RoutLinePlanots;
 import com.lifehelper.entity.RoutLineTabEntity;
+import com.lifehelper.presenter.impl.GreenDaoPresenterImpl;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.ViewUtils;
 import com.lifehelper.ui.fragment.ResultLineBusFragment;
 import com.lifehelper.ui.fragment.RouteLineLocationFragment;
+import com.lifehelper.view.GreenDaoView;
 import com.lifehelper.view.RouteLineTabView;
 
 import java.util.List;
@@ -37,7 +41,7 @@ import butterknife.OnClick;
 /**
  * Created by jsion on 16/3/16.
  */
-public class RouteLineActivity extends BaseActivity implements RouteLineTabView, RouteLineLocationFragment.OnGetFragmentValueListener {
+public class RouteLineActivity extends BaseActivity implements RouteLineTabView, RouteLineLocationFragment.OnGetFragmentValueListener, GreenDaoView {
     @Bind(R.id.toolbar_route_line)
     Toolbar mToolbar;
     @Bind(R.id.tab_layout)
@@ -45,6 +49,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
     @Bind(R.id.tv_route_line_search)
     TextView mRouteLineSearch;
 
+    private GreenDaoPresenterImpl mGreenDaoPresenter;
     private RouteLinePresenterImpl mPresenter;
     private ResultLineBusFragment mResultLineBusFragment;
     private RouteLineLocationFragment mRouteLineLocationFragment;
@@ -77,7 +82,19 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.fl_fragment_container, mResultLineBusFragment);
             ft.commit();
+
+            setDataTable();
+
         }
+    }
+
+    /**
+     * add data insert table
+     */
+    private void setDataTable() {
+        mGreenDaoPresenter.insertRoutePlanNodes(new RouteLineNodeTable(null, mCurrentTabType));
+        mGreenDaoPresenter.insertPlanNode(new PlanNodeTable(null, mStartNode.getLocation().latitude, mStartNode.getLocation().longitude, mStartAddress, Long.getLong("1")));
+        mGreenDaoPresenter.insertPlanNode(new PlanNodeTable(null, null, null, mTargetAddress, Long.getLong("1")));
     }
 
     @Override
@@ -94,6 +111,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         getIntentData();
         mCurrentTabType = TAB_TYPE._BUS;
         mPresenter = new RouteLinePresenterImpl(this);
+        mGreenDaoPresenter = new GreenDaoPresenterImpl(this, this);
         mStartAddress = getResources().getString(R.string.my_address);
     }
 
@@ -109,6 +127,10 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
                 if (!TextUtils.isEmpty(mWhereFrom) && mWhereFrom.equals(MainActivity.FROM_BOTTOM_SHEET)) {
                     mPoiInfroWithLocationEntity = bundle.getParcelable(MyConstance.CURRENT_POI_LOCATION);
                     mCurrentBDLoation = mPoiInfroWithLocationEntity.getmLocation();
+
+                    LatLng target = mPoiInfroWithLocationEntity.getmPoiInfoEntity().getPoiInfo().location;
+                    mTargetNote = PlanNode.withLocation(new LatLng(target.latitude, target.longitude));
+                    mRoutLinePlanots.setTargetPlanNode(mTargetNote);
                 } else {
                     mCurrentBDLoation = bundle.getParcelable(MyConstance.CURRENT_LOCATION);
                 }
@@ -224,9 +246,34 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
 
     @Override
     public void targetAddChanged(String targetAdd) {
+
         mTargetAddress = targetAdd;
         mTargetNote = PlanNode.withCityNameAndPlaceName(mCurrentBDLoation.getCity(), targetAdd);
         mRoutLinePlanots.setTargetPlanNode(mTargetNote);
+    }
+
+
+    @Override
+    public void bindRoutePlanNodes(List<RouteLineNodeTable> routeLineNodeTable) {
+
+    }
+
+    @Override
+    public void bindPlanNode(List<PlanNodeTable> planNodeTable) {
+
+    }
+
+    @Override
+    public void insertPlanNodes(PlanNodeTable planNodeTable) {
+    }
+
+    @Override
+    public void insertRoutePlanNodes(RouteLineNodeTable routeLineNodeTable) {
+    }
+
+    @Override
+    public void clearTable() {
+
     }
 
     public static class TAB_TYPE {
@@ -262,4 +309,5 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
         }
         return false;
     }
+
 }
