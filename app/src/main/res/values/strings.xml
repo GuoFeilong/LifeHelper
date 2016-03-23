@@ -20,4 +20,6 @@
     <string name="start_add_empty">出发地不能为空</string>
     <string name="target_add_empty">目的地不能为空</string>
     <string name="clear_route_line_history">清除历史记录</string>
+    <string name="distance">距离 :</string>
+    <string name="m_unit">米</string>
 </resources>

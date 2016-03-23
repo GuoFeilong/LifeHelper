@@ -69,7 +69,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rlv_route_line_history"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>

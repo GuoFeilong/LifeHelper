@@ -93,7 +93,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
      */
     private void setDataTable() {
         mGreenDaoPresenter.insertRoutePlanNodes(new RouteLineNodeTable(null, mCurrentTabType));
-        mGreenDaoPresenter.insertPlanNode(new PlanNodeTable(null, mStartNode.getLocation().latitude, mStartNode.getLocation().longitude, mStartAddress, Long.getLong("1")));
+        mGreenDaoPresenter.insertPlanNode(new PlanNodeTable(null, null, null, mStartAddress, Long.getLong("1")));
         mGreenDaoPresenter.insertPlanNode(new PlanNodeTable(null, null, null, mTargetAddress, Long.getLong("1")));
     }
 

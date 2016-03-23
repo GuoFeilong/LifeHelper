@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="5dp"
+        app:cardPreventCornerOverlap="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@+id/tv_item_route_bus_result_trans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="软件园通勤车"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/comment_text_size"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginBottom="@dimen/activity_vertical_margin_middle"
+                android:layout_marginTop="@dimen/activity_vertical_margin_middle"
+                android:background="@color/common_line" />
+
+            <TextView
+                android:id="@+id/tv_item_route_bus_result_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/icon_bus_result_time"
+                android:drawablePadding="@dimen/activity_vertical_margin_small"
+                android:gravity="center_vertical"
+                android:text="42分钟"
+                android:textColor="@color/common_text_color"
+                android:textSize="@dimen/comment_text_size" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin_middle"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_route_bus_result_station"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="6站"
+                    android:textColor="@color/common_text_color"
+                    android:textSize="@dimen/comment_text_size" />
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_middle"
+                    android:layout_marginRight="@dimen/activity_vertical_margin_middle"
+                    android:background="@drawable/bg_gray_rect_point" />
+
+                <TextView
+                    android:id="@+id/tv_item_route_bus_result_walk_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="步行1598米"
+                    android:textColor="@color/common_text_color"
+                    android:textSize="@dimen/comment_text_size" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>
