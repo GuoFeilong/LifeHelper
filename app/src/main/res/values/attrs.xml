@@ -7,11 +7,20 @@
         <attr name="mapStrokeWidth" format="dimension" />
         <attr name="normalStateIcon" format="reference" />
         <attr name="stereoStateIcon" format="reference" />
-        <attr name="noCurrentLocationIcon" format="reference"/>
+        <attr name="noCurrentLocationIcon" format="reference" />
         <attr name="mapText" format="string" />
         <attr name="mapTextColor" format="color" />
         <attr name="mapTextSize" format="dimension" />
-        <attr name="mapIconMode" format="boolean"/>
+        <attr name="mapIconMode" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="DashPointView">
+        <attr name="pointColor" format="color" />
+        <attr name="startPointColor" format="color" />
+        <attr name="endPointColor" format="color" />
+        <attr name="showStartPoint" format="boolean" />
+        <attr name="showEndPoint" format="boolean" />
+        <attr name="showBothPoint" format="boolean" />
+        <attr name="showNormalPoint" format="boolean" />
+    </declare-styleable>
 </resources>

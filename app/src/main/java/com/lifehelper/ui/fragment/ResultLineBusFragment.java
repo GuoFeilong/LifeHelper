@@ -38,6 +38,7 @@ import com.lifehelper.baidumap.WalkingRouteOverlay;
 import com.lifehelper.entity.RoutLinePlanots;
 import com.lifehelper.tools.Logger;
 import com.lifehelper.ui.RouteLineActivity;
+import com.lifehelper.ui.customwidget.BottomSheetResultDialogView;
 import com.lifehelper.ui.customwidget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -66,6 +67,9 @@ public class ResultLineBusFragment extends BaseFragment {
     RecyclerView mBusResult;
     private BusRouteResultAdapter mResultAdapter;
     private List<TransitRouteLine> mBusRouteLines;
+    private OnRecyclerItemClickListener recylerItemClick;
+    private int mPosition;
+    private boolean isClickRecyler;
 
     @Nullable
     @Override
@@ -94,6 +98,15 @@ public class ResultLineBusFragment extends BaseFragment {
             mResultAdapter = new BusRouteResultAdapter();
             mBusResult.setLayoutManager(new LinearLayoutManager(getActivity()));
             mBusResult.setAdapter(mResultAdapter);
+            recylerItemClick = new OnRecyclerItemClickListener() {
+                @Override
+                public void onRecylerItemClick(int postion,TransitRouteLine transitRouteLine) {
+                    mPosition = postion;
+                    isClickRecyler = true;
+                    differentRoutePlan(mRoutLinePlanots.getTabType());
+                    BottomSheetResultDialogView resultDialogView = new BottomSheetResultDialogView(transitRouteLine,getActivity());
+                }
+            };
         }
 
         differentRoutePlan(mRoutLinePlanots.getTabType());
@@ -128,9 +141,9 @@ public class ResultLineBusFragment extends BaseFragment {
                     @Override
                     public void onCompleted() {
                         mLoadingDialog.dismiss();
-                        if (mRoutLinePlanots.getTabType() == RouteLineActivity.TAB_TYPE._BUS){
+                        if (mRoutLinePlanots.getTabType() == RouteLineActivity.TAB_TYPE._BUS) {
                             mMapView.setVisibility(View.GONE);
-                        }else {
+                        } else {
                             mMapView.setVisibility(View.VISIBLE);
                         }
                     }
@@ -203,17 +216,19 @@ public class ResultLineBusFragment extends BaseFragment {
                     return;
                 }
                 if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-                    if (mRoutLinePlanots.getTabType() == RouteLineActivity.TAB_TYPE._BUS) {
+                    if (mRoutLinePlanots.getTabType() == RouteLineActivity.TAB_TYPE._BUS && !isClickRecyler) {
                         mBusResult.setVisibility(View.VISIBLE);
                         mBusRouteLines = result.getRouteLines();
                         mResultAdapter.notifyDataSetChanged();
                         mMapView.setVisibility(View.GONE);
+
+                        mResultAdapter.setRecyclerItemClickListener(recylerItemClick);
                     } else {
                         mMapView.setVisibility(View.VISIBLE);
                         mBusResult.setVisibility(View.GONE);
                         TransitRouteOverlay overlay = new MyTransitRouteOverlay(mBaiduMap, false);
                         mBaiduMap.setOnMarkerClickListener(overlay);
-                        overlay.setData(result.getRouteLines().get(0));
+                        overlay.setData(result.getRouteLines().get(mPosition));
                         overlay.addToMap();
                         overlay.zoomToSpan();
                     }
@@ -406,11 +421,22 @@ public class ResultLineBusFragment extends BaseFragment {
         mMapView.onDestroy();
         mBaiduMap = null;
         mMapView = null;
+        isClickRecyler = false;
+        mPosition = 0;
         super.onDestroyView();
+
     }
 
+    public interface OnRecyclerItemClickListener {
+        void onRecylerItemClick(int postion,TransitRouteLine transitRouteLine);
+    }
 
     class BusRouteResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private OnRecyclerItemClickListener recyclerItemClickListener;
+
+        public void setRecyclerItemClickListener(OnRecyclerItemClickListener recyclerItemClickListener) {
+            this.recyclerItemClickListener = recyclerItemClickListener;
+        }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -420,13 +446,13 @@ public class ResultLineBusFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            TransitRouteLine transitRouteLine = mBusRouteLines.get(position);
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+            final TransitRouteLine transitRouteLine = mBusRouteLines.get(position);
             BusRouteResultVH busRouteResultVH = (BusRouteResultVH) holder;
             if (transitRouteLine != null) {
                 String distance = transitRouteLine.getDistance() + getResources().getString(R.string.m_unit);
                 busRouteResultVH.resultDistance.setText(distance);
-                String time = String.format("%.1f", transitRouteLine.getDuration() / 60.0f);
+                String time = String.format("%.1f", transitRouteLine.getDuration() / 60.0f) + "分钟";
                 busRouteResultVH.resultTime.setText(time);
                 int stationCount = 0;
                 StringBuffer routeBusTitle = new StringBuffer();
@@ -438,7 +464,7 @@ public class ResultLineBusFragment extends BaseFragment {
                             int passStationNum = vehicleInfo.getPassStationNum();
                             stationCount += passStationNum;
                             String title = vehicleInfo.getTitle();
-                            if (i != allStep.size() - 1) {
+                            if (allStep.size() > 1 && i != allStep.size() - 1) {
                                 routeBusTitle.append(title)
                                         .append(" - ");
                             } else {
@@ -449,6 +475,15 @@ public class ResultLineBusFragment extends BaseFragment {
                 }
                 busRouteResultVH.resultStation.setText(stationCount + "站");
                 busRouteResultVH.resultTrans.setText(routeBusTitle.toString());
+
+                if (recyclerItemClickListener != null) {
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            recyclerItemClickListener.onRecylerItemClick(position,transitRouteLine);
+                        }
+                    });
+                }
             }
 
         }

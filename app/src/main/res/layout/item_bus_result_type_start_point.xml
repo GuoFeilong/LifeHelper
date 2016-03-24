@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="horizontal">
+
+
+    <com.lifehelper.ui.customwidget.DashPointView
+        android:layout_width="14dp"
+        android:layout_height="?attr/actionBarSize"
+        app:endPointColor="@color/skin_colorPrimaryDark_mred"
+        app:pointColor="@color/common_line"
+        app:showStartPoint="true"
+        app:startPointColor="@color/skin_colorPrimary_green" />
+
+
+    <TextView
+        android:id="@+id/tv_item_bus_result_start_point"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:text="起点(西二旗)"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/comment_text_size" />
+
+
+</LinearLayout>
