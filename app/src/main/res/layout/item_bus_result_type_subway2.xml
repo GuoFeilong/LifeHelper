@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:id="@+id/ll_subway_start_icon_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_subway_start_icon"
+            android:layout_width="@dimen/bus_result_icon_size"
+            android:layout_height="@dimen/bus_result_icon_size"
+            android:background="@mipmap/icon_route_incity_list_subway" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="@dimen/activity_vertical_margin_big"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/skin_colorPrimary_blue" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_subway_get_on_station"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_vertical_margin_big"
+        android:layout_toRightOf="@id/ll_subway_start_icon_container"
+        android:text="西二旗上车"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/comment_text_size" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_subway_start_icon_container"
+        android:layout_marginLeft="@dimen/activity_vertical_margin_big"
+        android:layout_toRightOf="@id/ll_subway_start_icon_container"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_subway_orientation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="地铁13号线(西直门方向)"
+            android:textColor="@color/common_text_color"
+            android:textSize="@dimen/comment_text_size" />
+
+
+        <LinearLayout
+            android:id="@+id/ll_subway_all_station"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <include layout="@layout/item_bus_result_type_bus_station" />
+
+            <include layout="@layout/item_bus_result_type_bus_station" />
+
+            <include layout="@layout/item_bus_result_type_bus_station" />
+
+            <include layout="@layout/item_bus_result_type_bus_station" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_subway_orientation"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/ll_subway_start_icon_container"-->
+    <!--android:layout_marginLeft="@dimen/activity_vertical_margin_big"-->
+    <!--android:layout_toRightOf="@id/ll_subway_start_icon_container"-->
+    <!--android:singleLine="true"-->
+    <!--android:text="地铁13号线(西直门方向)"-->
+    <!--android:textColor="@color/common_text_color"-->
+    <!--android:textSize="@dimen/comment_text_size" />-->
+
+    <TextView
+        android:id="@+id/tv_subway_station_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/ll_subway_start_icon_container"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:drawablePadding="@dimen/activity_vertical_margin_small"
+        android:drawableRight="@mipmap/down_arrow"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="5站"
+        android:textColor="@color/common_text_color"
+        android:textSize="@dimen/comment_text_size" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_subway_end_icon_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_subway_start_icon_container"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="@dimen/activity_vertical_margin_big"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/skin_colorPrimary_blue" />
+
+        <ImageView
+            android:id="@+id/iv_subway_end_icon"
+            android:layout_width="@dimen/bus_result_icon_size"
+            android:layout_height="@dimen/bus_result_icon_size"
+            android:background="@mipmap/icon_route_incity_list_subway" />
+    </LinearLayout>
+
+
+</RelativeLayout>

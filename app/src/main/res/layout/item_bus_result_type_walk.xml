@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/bus_result_item_height"
+    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+    android:background="@android:color/white">
 
-</LinearLayout>
+
+    <com.lifehelper.ui.customwidget.DashPointView
+        android:id="@+id/dash_point_walk"
+        android:layout_width="@dimen/activity_vertical_margin_middle"
+        android:layout_height="match_parent"
+        app:endPointColor="@color/skin_colorPrimaryDark_mred"
+        app:pointColor="@color/common_line"
+        app:showStartPoint="true"
+        app:startPointColor="@color/skin_colorPrimary_green" />
+
+
+    <TextView
+        android:id="@+id/tv_item_bus_result_start_walk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_vertical_margin_big"
+        android:layout_toRightOf="@id/dash_point_walk"
+        android:text="起点(西二旗)"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/comment_text_size" />
+
+
+    <TextView
+        android:id="@+id/tv_item_bus_result_start_walk_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/activity_vertical_margin_big"
+        android:layout_toRightOf="@id/dash_point_walk"
+        android:text="步行1000米"
+        android:textSize="@dimen/comment_text_size" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:src="@mipmap/route_walk_nav_blue" />
+
+
+    <TextView
+        android:id="@+id/tv_item_bus_result_end_walk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/activity_vertical_margin_big"
+        android:layout_toRightOf="@id/dash_point_walk"
+        android:text="终点(北京西站)"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/comment_text_size" />
+
+
+</RelativeLayout>

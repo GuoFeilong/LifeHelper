@@ -19,14 +19,14 @@ public class MyClass {
     private static void testPersonBirth() {
         PersonBirthDate personBirthDate = new PersonBirthDate(new Date());
         boolean isContains = personBirthDate.isContains();
-        System.out.print("\ntestPersonBirth1:" + isContains+"\n");
+        System.out.print("\ntestPersonBirth1:" + isContains + "\n");
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(1965, Calendar.JANUARY, 1, 0, 0, 0);
 
         personBirthDate = new PersonBirthDate(calendar.getTime());
         isContains = personBirthDate.isContains();
-        System.out.print("\ntestPersonBirth2:" + isContains+"\n");
+        System.out.print("\ntestPersonBirth2:" + isContains + "\n");
 
     }
 
@@ -71,4 +71,5 @@ public class MyClass {
 
         System.out.print("我的车:" + mCar.toString() + "\n别人的车:" + otherCar.toString() + "\n我的房子:" + mHouse.toString() + "\n别人房子:" + otherHouse.toString());
     }
+
 }

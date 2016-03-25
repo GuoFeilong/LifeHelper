@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/item_bus_result_type_start_point" />
 
+    <include layout="@layout/item_bus_result_type_subway" />
 
-
+    <include layout="@layout/item_bus_result_type_end_point" />
 </LinearLayout>
