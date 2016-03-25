@@ -131,21 +131,38 @@ public class BottomSheetResultDialogView<T extends RouteLine> {
                         busStepWalkVH.startWalk.setText(entranceTitle);
                         busStepWalkVH.endWalk.setText(exitTitle);
                         busStepWalkVH.walkStepDesc.setText(instructions);
+                        if (position == 0) {
+                            busStepWalkVH.walkDashPoint.setShowStartPoint();
+                        } else if (position == mAllStep.size() - 1) {
+                            busStepWalkVH.walkDashPoint.setShowEndPoint();
+                        } else {
+                            busStepWalkVH.walkDashPoint.setShowNormal();
+                        }
                     } else if (stepType.equals(TransitRouteLine.TransitStep.TransitRouteStepType.BUSLINE)) {
                         busStepBusOrSubWayVH = (BusStepBusOrSubWayVH) holder;
-                        busStepBusOrSubWayVH.busOrSubGetOnStation.setText(entranceTitle);
-                        busStepBusOrSubWayVH.busOrSubGetOffStation.setText(exitTitle);
-                        busStepBusOrSubWayVH.busOrSubOrientation.setText(instructions);
-                        busStepBusOrSubWayVH.busOrSubStationCount.setText(passStationNum + "站");
+                        setBusOrSubData(instructions, entranceTitle, exitTitle, passStationNum, busStepBusOrSubWayVH);
+                        setColorAndIcon(busStepBusOrSubWayVH, R.mipmap.icon_route_incity_list_bus, context.getResources().getColor(R.color.skin_colorPrimary_orange));
                     } else if (stepType.equals(TransitRouteLine.TransitStep.TransitRouteStepType.SUBWAY)) {
                         busStepBusOrSubWayVH = (BusStepBusOrSubWayVH) holder;
-                        busStepBusOrSubWayVH.busOrSubGetOnStation.setText(entranceTitle);
-                        busStepBusOrSubWayVH.busOrSubGetOffStation.setText(exitTitle);
-                        busStepBusOrSubWayVH.busOrSubOrientation.setText(instructions);
-                        busStepBusOrSubWayVH.busOrSubStationCount.setText(passStationNum + "站");
+                        setColorAndIcon(busStepBusOrSubWayVH, R.mipmap.icon_route_incity_list_subway, context.getResources().getColor(R.color.skin_colorPrimary_blue));
+                        setBusOrSubData(instructions, entranceTitle, exitTitle, passStationNum, busStepBusOrSubWayVH);
+
                     }
                 }
             }
+        }
+
+        private void setColorAndIcon(BusStepBusOrSubWayVH busStepBusOrSubWayVH, int icon_route_incity_list_bus, int color) {
+            busStepBusOrSubWayVH.busOrSubEndIcon.setImageResource(icon_route_incity_list_bus);
+            busStepBusOrSubWayVH.busOrSubStartIcon.setImageResource(icon_route_incity_list_bus);
+            busStepBusOrSubWayVH.busOrSubLine.setBackgroundColor(color);
+        }
+
+        private void setBusOrSubData(String instructions, String entranceTitle, String exitTitle, int passStationNum, BusStepBusOrSubWayVH busStepBusOrSubWayVH) {
+            busStepBusOrSubWayVH.busOrSubGetOnStation.setText(entranceTitle);
+            busStepBusOrSubWayVH.busOrSubGetOffStation.setText(exitTitle);
+            busStepBusOrSubWayVH.busOrSubOrientation.setText(instructions);
+            busStepBusOrSubWayVH.busOrSubStationCount.setText(passStationNum + "站");
         }
 
         @Override

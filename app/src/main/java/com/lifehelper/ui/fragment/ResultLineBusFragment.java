@@ -70,6 +70,7 @@ public class ResultLineBusFragment extends BaseFragment {
     private OnRecyclerItemClickListener recylerItemClick;
     private int mPosition;
     private boolean isClickRecyler;
+    private TransitRouteLine mCurrentTransitRouteLine;
 
     @Nullable
     @Override
@@ -100,11 +101,11 @@ public class ResultLineBusFragment extends BaseFragment {
             mBusResult.setAdapter(mResultAdapter);
             recylerItemClick = new OnRecyclerItemClickListener() {
                 @Override
-                public void onRecylerItemClick(int postion,TransitRouteLine transitRouteLine) {
+                public void onRecylerItemClick(int postion, TransitRouteLine transitRouteLine) {
                     mPosition = postion;
                     isClickRecyler = true;
+                    mCurrentTransitRouteLine = transitRouteLine;
                     differentRoutePlan(mRoutLinePlanots.getTabType());
-                    BottomSheetResultDialogView resultDialogView = new BottomSheetResultDialogView(transitRouteLine,getActivity());
                 }
             };
         }
@@ -231,6 +232,9 @@ public class ResultLineBusFragment extends BaseFragment {
                         overlay.setData(result.getRouteLines().get(mPosition));
                         overlay.addToMap();
                         overlay.zoomToSpan();
+
+                        BottomSheetResultDialogView resultDialogView = new BottomSheetResultDialogView(mCurrentTransitRouteLine, getActivity());
+
                     }
                 }
 
@@ -428,7 +432,7 @@ public class ResultLineBusFragment extends BaseFragment {
     }
 
     public interface OnRecyclerItemClickListener {
-        void onRecylerItemClick(int postion,TransitRouteLine transitRouteLine);
+        void onRecylerItemClick(int postion, TransitRouteLine transitRouteLine);
     }
 
     class BusRouteResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -480,7 +484,7 @@ public class ResultLineBusFragment extends BaseFragment {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            recyclerItemClickListener.onRecylerItemClick(position,transitRouteLine);
+                            recyclerItemClickListener.onRecylerItemClick(position, transitRouteLine);
                         }
                     });
                 }

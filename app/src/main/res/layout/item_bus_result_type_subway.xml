@@ -14,7 +14,7 @@
             android:id="@+id/iv_subway_start_icon"
             android:layout_width="@dimen/bus_result_icon_size"
             android:layout_height="@dimen/bus_result_icon_size"
-            android:background="@mipmap/icon_route_incity_list_subway" />
+            android:src="@mipmap/icon_route_incity_list_subway" />
 
         <ImageView
             android:id="@+id/iv_subway_line"
@@ -28,7 +28,7 @@
             android:id="@+id/iv_subway_end_icon"
             android:layout_width="@dimen/bus_result_icon_size"
             android:layout_height="@dimen/bus_result_icon_size"
-            android:background="@mipmap/icon_route_incity_list_subway" />
+            android:src="@mipmap/icon_route_incity_list_subway" />
     </LinearLayout>
 
     <TextView
@@ -41,9 +41,9 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/comment_text_size" />
 
-    <TextView
+    <com.lifehelper.ui.customwidget.MarqueeTextView
         android:id="@+id/tv_subway_orientation"
-        android:layout_width="wrap_content"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/activity_vertical_margin_big"

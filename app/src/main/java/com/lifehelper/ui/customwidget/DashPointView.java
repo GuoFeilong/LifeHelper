@@ -168,4 +168,35 @@ public class DashPointView extends View {
             }
         }
     }
+
+    public void setShowStartPoint() {
+        resetFlag();
+        this.showStartPoint = true;
+        postInvalidate();
+    }
+
+    public void setShowEndPoint() {
+        resetFlag();
+        this.showEndPoint = true;
+        postInvalidate();
+    }
+
+    public void setShowBoth() {
+        resetFlag();
+        this.showBoth = true;
+        postInvalidate();
+    }
+
+    public void setShowNormal() {
+        resetFlag();
+        this.showNormal = true;
+        postInvalidate();
+    }
+
+    private void resetFlag() {
+        showEndPoint = false;
+        showStartPoint = false;
+        showBoth = false;
+        showNormal = false;
+    }
 }
