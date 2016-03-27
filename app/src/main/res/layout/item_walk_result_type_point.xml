@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        app:cardElevation="@dimen/activity_vertical_margin_small"
+        app:cardPreventCornerOverlap="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/activity_vertical_margin_small">
+
+
+            <LinearLayout
+                android:id="@+id/iv_walk_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layoutAnimation="@anim/layout_animation"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin_small"
+                    android:src="@mipmap/route_walk_nav_blue" />
+
+            </LinearLayout>
+
+
+            <com.lifehelper.ui.customwidget.DashPointView
+                android:id="@+id/dash_point_walk_start"
+                android:layout_width="@dimen/activity_vertical_margin_middle"
+                android:layout_height="match_parent"
+                android:layout_above="@id/iv_walk_icon"
+                app:endPointColor="@color/skin_colorPrimaryDark_mred"
+                app:pointColor="@color/common_line"
+                app:showStartPoint="true"
+                app:startPointColor="@color/skin_colorPrimary_green" />
+
+
+            <com.lifehelper.ui.customwidget.DashPointView
+                android:id="@+id/dash_point_walk_end"
+                android:layout_width="@dimen/activity_vertical_margin_middle"
+                android:layout_height="match_parent"
+                android:layout_below="@id/iv_walk_icon"
+                app:endPointColor="@color/skin_colorPrimaryDark_mred"
+                app:pointColor="@color/common_line"
+                app:showEndPoint="true"
+                app:startPointColor="@color/skin_colorPrimary_green" />
+
+
+            <com.lifehelper.ui.customwidget.MarqueeTextView
+                android:id="@+id/tv_walk_entrance_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_toRightOf="@id/dash_point_walk_start"
+                android:singleLine="true"
+                android:text="我的位置"
+                android:textColor="@color/common_text_color"
+                android:textSize="@dimen/comment_text_size" />
+
+
+            <com.lifehelper.ui.customwidget.MarqueeTextView
+                android:id="@+id/tv_walk_exit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_toRightOf="@id/dash_point_walk_start"
+                android:singleLine="true"
+                android:text="终点站"
+                android:textColor="@color/common_text_color"
+                android:textSize="@dimen/comment_text_size" />
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>

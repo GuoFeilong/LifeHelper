@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.baidu.mapapi.search.core.RouteLine;
 import com.baidu.mapapi.search.core.RouteNode;
+import com.baidu.mapapi.search.core.RouteStep;
 import com.baidu.mapapi.search.core.VehicleInfo;
 import com.baidu.mapapi.search.route.DrivingRouteLine;
 import com.baidu.mapapi.search.route.TransitRouteLine;
@@ -34,9 +35,12 @@ public class BottomSheetResultDialogView<T extends RouteLine> {
     @Bind(R.id.rlv_bottom_all)
     RecyclerView bottomAll;
     private final BottomSheetDialog bottomSheetDialog;
-    private List<TransitRouteLine.TransitStep> mAllStep;
+    private List<? extends RouteStep> mAllStep;
     private BusStepAdapter busStepAdapter;
+    private WalkStepAdapter walkStepAdapter;
+    private DriveStepAdapter driveStepAdapter;
 
+    // construct for bus
     public BottomSheetResultDialogView(T result, Context context) {
         this.context = context;
         this.result = result;
@@ -66,13 +70,20 @@ public class BottomSheetResultDialogView<T extends RouteLine> {
         } else if (result instanceof WalkingRouteLine) {
             title = "步行路线";
             bottomDesc.setBackgroundColor(context.getResources().getColor(R.color.skin_colorPrimary_lGreen));
+            mAllStep = ((WalkingRouteLine) result).getAllStep();
+            walkStepAdapter = new WalkStepAdapter();
+            bottomAll.setLayoutManager(new LinearLayoutManager(context));
+            bottomAll.setAdapter(walkStepAdapter);
         } else if (result instanceof DrivingRouteLine) {
             title = "驾车路线";
             bottomDesc.setBackgroundColor(context.getResources().getColor(R.color.skin_colorPrimary_mred));
+            mAllStep = ((DrivingRouteLine) result).getAllStep();
+            driveStepAdapter = new DriveStepAdapter();
+            bottomAll.setLayoutManager(new LinearLayoutManager(context));
+            bottomAll.setAdapter(driveStepAdapter);
         }
         bottomDesc.setText(title);
     }
-
 
     class BusStepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -98,7 +109,7 @@ public class BottomSheetResultDialogView<T extends RouteLine> {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (mAllStep != null) {
-                TransitRouteLine.TransitStep transitStep = mAllStep.get(position);
+                TransitRouteLine.TransitStep transitStep = (TransitRouteLine.TransitStep) mAllStep.get(position);
                 if (transitStep != null) {
                     RouteNode entrance = transitStep.getEntrance();
                     RouteNode exit = transitStep.getExit();
@@ -174,7 +185,7 @@ public class BottomSheetResultDialogView<T extends RouteLine> {
         public int getItemViewType(int position) {
             int viewType = -1;
             if (mAllStep != null && mAllStep.size() > position) {
-                TransitRouteLine.TransitStep transitStep = mAllStep.get(position);
+                TransitRouteLine.TransitStep transitStep = (TransitRouteLine.TransitStep) mAllStep.get(position);
                 if (transitStep != null) {
                     TransitRouteLine.TransitStep.TransitRouteStepType stepType = transitStep.getStepType();
                     if (stepType.equals(TransitRouteLine.TransitStep.TransitRouteStepType.WAKLING)) {
@@ -238,6 +249,122 @@ public class BottomSheetResultDialogView<T extends RouteLine> {
         public static final int BUS = 56;
         public static final int SUBWAY = 57;
 
+    }
+
+
+    class WalkStepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            RecyclerView.ViewHolder viewHolder = new WalkSetpVH(LayoutInflater.from(context)
+                    .inflate(R.layout.item_walk_result_type_point, parent, false));
+            return viewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            WalkingRouteLine.WalkingStep walkingStep = (WalkingRouteLine.WalkingStep) mAllStep.get(position);
+
+            WalkSetpVH walkSetpVH = (WalkSetpVH) holder;
+            if (walkingStep != null) {
+                String entranceInstructions = walkingStep.getEntranceInstructions();
+                String exitInstructions = walkingStep.getExitInstructions();
+
+                walkSetpVH.entranceText.setText(entranceInstructions);
+                walkSetpVH.exitText.setText(exitInstructions);
+
+                if (position == 0) {
+                    walkSetpVH.walkStart.setShowStartPoint();
+                    walkSetpVH.walkEnd.setShowNormal();
+                } else if (position == mAllStep.size() - 1) {
+                    walkSetpVH.walkStart.setShowNormal();
+                    walkSetpVH.walkEnd.setShowEndPoint();
+                } else {
+                    walkSetpVH.walkStart.setShowNormal();
+                    walkSetpVH.walkEnd.setShowNormal();
+                }
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mAllStep == null ? 0 : mAllStep.size();
+        }
+
+        class WalkSetpVH extends RecyclerView.ViewHolder {
+            @Bind(R.id.dash_point_walk_start)
+            DashPointView walkStart;
+            @Bind(R.id.dash_point_walk_end)
+            DashPointView walkEnd;
+            @Bind(R.id.tv_walk_entrance_text)
+            TextView entranceText;
+            @Bind(R.id.tv_walk_exit_text)
+            TextView exitText;
+
+            public WalkSetpVH(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+    }
+
+
+    class DriveStepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            RecyclerView.ViewHolder viewHolder = new WalkSetpVH(LayoutInflater.from(context)
+                    .inflate(R.layout.item_drive_result_type_point, parent, false));
+            return viewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            DrivingRouteLine.DrivingStep drivingStep = (DrivingRouteLine.DrivingStep) mAllStep.get(position);
+
+            WalkSetpVH walkSetpVH = (WalkSetpVH) holder;
+            if (drivingStep != null) {
+                String entranceInstructions = drivingStep.getEntranceInstructions();
+                String exitInstructions = drivingStep.getExitInstructions();
+
+                walkSetpVH.entranceText.setText(entranceInstructions);
+                walkSetpVH.exitText.setText(exitInstructions);
+
+                if (position == 0) {
+                    walkSetpVH.walkStart.setShowStartPoint();
+                    walkSetpVH.walkEnd.setShowNormal();
+                } else if (position == mAllStep.size() - 1) {
+                    walkSetpVH.walkStart.setShowNormal();
+                    walkSetpVH.walkEnd.setShowEndPoint();
+                } else {
+                    walkSetpVH.walkStart.setShowNormal();
+                    walkSetpVH.walkEnd.setShowNormal();
+                }
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mAllStep == null ? 0 : mAllStep.size();
+        }
+
+        class WalkSetpVH extends RecyclerView.ViewHolder {
+            @Bind(R.id.dash_point_walk_start)
+            DashPointView walkStart;
+            @Bind(R.id.dash_point_walk_end)
+            DashPointView walkEnd;
+            @Bind(R.id.tv_walk_entrance_text)
+            TextView entranceText;
+            @Bind(R.id.tv_walk_exit_text)
+            TextView exitText;
+
+            public WalkSetpVH(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
     }
 
 

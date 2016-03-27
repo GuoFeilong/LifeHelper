@@ -20,6 +20,7 @@ import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.core.TaxiInfo;
 import com.baidu.mapapi.search.core.VehicleInfo;
 import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteLine;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
@@ -27,6 +28,7 @@ import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteLine;
 import com.baidu.mapapi.search.route.TransitRoutePlanOption;
 import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteLine;
 import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.lifehelper.R;
@@ -193,15 +195,66 @@ public class ResultLineBusFragment extends BaseFragment {
                     walkingRouteOverlay.addToMap();
                     walkingRouteOverlay.zoomToSpan();
 
-//                    List<WalkingRouteLine> walkingRouteResultRouteLines = walkingRouteResult.getRouteLines();
-//                    for (int i = 0; i < walkingRouteResultRouteLines.size(); i++) {
-//                        WalkingRouteLine walkingRouteLine = walkingRouteResultRouteLines.get(i);
-//                        List<WalkingRouteLine.WalkingStep> allStep = walkingRouteLine.getAllStep();
-//                        for (int j = 0; j < allStep.size(); i++) {
-//                            WalkingRouteLine.WalkingStep walkingStep = allStep.get(j);
-//
-//                        }
-//                    }
+
+                    StringBuffer walkBuffer = new StringBuffer();
+                    List<WalkingRouteLine> routeLines = walkingRouteResult.getRouteLines();
+
+                    BottomSheetResultDialogView resultDialogView = new BottomSheetResultDialogView(routeLines.get(0), getActivity());
+
+                    if (routeLines != null && routeLines.size() > 0) {
+                        for (int i = 0; i < routeLines.size(); i++) {
+                            WalkingRouteLine walkingRouteLine = routeLines.get(i);
+                            if (walkingRouteLine != null) {
+                                int walkingRouteLineDuration = walkingRouteLine.getDuration();
+                                int walkingRouteLineDistance = walkingRouteLine.getDistance();
+
+                                walkBuffer.append("walkingRouteLineDuration=")
+                                        .append(walkingRouteLineDuration + "\n")
+                                        .append("walkingRouteLineDistance=")
+                                        .append(walkingRouteLineDistance + "\n");
+
+
+                                List<WalkingRouteLine.WalkingStep> walkingSteps = walkingRouteLine.getAllStep();
+                                if (walkingSteps != null && walkingSteps.size() > 0) {
+                                    for (int j = 0; j < walkingSteps.size(); j++) {
+                                        WalkingRouteLine.WalkingStep walkingStep = walkingSteps.get(j);
+                                        if (walkingStep != null) {
+                                            int walkingStepDirection = walkingStep.getDirection();
+                                            String entranceInstructions = walkingStep.getEntranceInstructions();
+                                            String exitInstructions = walkingStep.getExitInstructions();
+
+
+                                            walkBuffer.append("walkingStepDirection=")
+                                                    .append(walkingStepDirection + "\n")
+                                                    .append("entranceInstructions=")
+                                                    .append(entranceInstructions + "\n")
+                                                    .append("exitInstructions=")
+                                                    .append(exitInstructions + "\n");
+
+                                            RouteNode entranceRouteNode = walkingStep.getEntrance();
+                                            RouteNode exitRouteNode = walkingStep.getExit();
+
+                                            if (exitRouteNode != null) {
+                                                String entranceRouteNodeTitle = entranceRouteNode.getTitle();
+                                                walkBuffer.append("entranceRouteNodeTitle=")
+                                                        .append(entranceRouteNodeTitle + "\n");
+                                            }
+
+                                            if (exitRouteNode != null) {
+                                                String exitRouteNodeTitle = exitRouteNode.getTitle();
+                                                walkBuffer.append("exitRouteNodeTitle=")
+                                                        .append(exitRouteNodeTitle + "\n");
+                                            }
+
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Logger.e(walkBuffer.toString());
                 }
             }
 
@@ -375,6 +428,10 @@ public class ResultLineBusFragment extends BaseFragment {
                     overlay.setData(drivingRouteResult.getRouteLines().get(0));
                     overlay.addToMap();
                     overlay.zoomToSpan();
+
+
+                    List<DrivingRouteLine> drivingRouteLineList = drivingRouteResult.getRouteLines();
+                    BottomSheetResultDialogView resultDialogView = new BottomSheetResultDialogView(drivingRouteLineList.get(0), getActivity());
 
                 }
             }
