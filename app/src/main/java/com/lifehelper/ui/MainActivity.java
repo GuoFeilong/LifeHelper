@@ -209,7 +209,12 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             @Override
             public void onRecylerItemClick(int clickType) {
                 drawerOpenOrClose();
-                showNavDetailPop(clickType);
+                if (clickType == NAV_MENU_CLICK._WHO) {
+                    ViewUtils.changeActivity(MainActivity.this, WhoActivity.class, mCurrentBDLocation);
+                } else {
+                    showNavDetailPop(clickType);
+                }
+
             }
 
             @Override
@@ -221,14 +226,12 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         mOnNavPopClickListener = new OnNavPopClickListener() {
             @Override
             public void onPopHeaderClick(NavMenuDetailEntity popItemDesc) {
-//                mNavPopupWindow.dismiss();
                 mLoadingDialog.show();
                 testPOI(mCurrentCenpt, popItemDesc.getNavMenuDetailDesc(), 0, true, popItemDesc);
             }
 
             @Override
             public void onPopDeItemClick(String popItemName, NavMenuDetailEntity forGetUI) {
-//                mNavPopupWindow.dismiss();
                 mLoadingDialog.show();
                 testPOI(mCurrentCenpt, popItemName, 0, false, forGetUI);
             }

@@ -1,5 +1,6 @@
 package com.lifehelper.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -43,5 +44,10 @@ public class ResultLineCarFragment extends BaseFragment {
     @Override
     public void initView(View view) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
