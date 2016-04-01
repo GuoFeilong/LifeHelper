@@ -2,11 +2,13 @@ package com.lifehelper.ui;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -210,6 +213,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             public void onRecylerItemClick(int clickType) {
                 drawerOpenOrClose();
                 if (clickType == NAV_MENU_CLICK._WHO) {
+//                    ViewUtils.changeActivity(MainActivity.this, AAATestActiviy.class, mCurrentBDLocation);
                     ViewUtils.changeActivity(MainActivity.this, WhoActivity.class, mCurrentBDLocation);
                 } else {
                     showNavDetailPop(clickType);
@@ -399,6 +403,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
 
     @Override
     protected void initEvent() {
+
         mNavMenuPresenter.getNavMenuData();
         mNavMenuDetailPresenter.getNavMenuDetail();
 
@@ -458,6 +463,7 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
                     mBaiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
                     mMapStateViewSatellite.setmCurrentIconAndTextState(MapStateView.MAP_TEXT_STATE.MAP_ICON_OFF);
                     T.show(MainActivity.this, getResources().getString(R.string.satellite_on), 0);
+
                 } else {
                     mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
                     mMapStateViewSatellite.setmCurrentIconAndTextState(MapStateView.MAP_TEXT_STATE.MAP_ICON_ON);
@@ -1185,6 +1191,37 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
         public static final int _PLAY = 55;
         public static final int _HAPPY = 66;
         public static final int _WHO = 77;
+    }
+
+    // TODO: 16/3/29   在activity初始化完毕后调用, 不要在oncreate中直接调用,必须在mainactivity中
+    class NoUIThread extends Thread {
+
+        @Override
+
+        public void run() {
+
+
+            Looper.prepare();
+
+            TextView tx = new TextView(MainActivity.this);
+            tx.setBackgroundColor(getResources().getColor(R.color.common_red_color));
+            tx.setTextColor(getResources().getColor(R.color.demo_title1));
+            tx.setText("子线程增加自己的ViewRoot,即可刷新UI");
+
+
+            WindowManager wm = MainActivity.this.getWindowManager();
+
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+
+                    250, 250, 200, 200, WindowManager.LayoutParams.FIRST_SUB_WINDOW,
+
+                    WindowManager.LayoutParams.TYPE_TOAST, PixelFormat.OPAQUE);
+
+            wm.addView(tx, params);
+            Looper.loop();
+
+        }
+
     }
 
 

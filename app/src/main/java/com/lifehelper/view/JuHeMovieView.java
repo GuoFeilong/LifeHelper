@@ -1,6 +1,7 @@
 package com.lifehelper.view;
 
 import com.lifehelper.entity.MovieEntity;
+import com.lifehelper.entity.MovieRecentEntity;
 
 /**
  * Created by jsion on 16/3/29.
@@ -10,9 +11,11 @@ public interface JuHeMovieView {
 
     void bindJuHeSearchMovie(MovieEntity movieEntity);
 
-    void bindJHeRecentMovies();
+    void bindJHeRecentMovies(MovieRecentEntity movieRecentEntity);
 
-    void showErrorMessage();
+    void showErrorMessage(String error);
 
     void dismissLoading();
+
+    void completed();
 }

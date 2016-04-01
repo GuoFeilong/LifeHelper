@@ -16,6 +16,11 @@ public class MyConstance {
     public static final String JUHE_MOVIE_PMOVIE_KEY = "pmovie";
     public static final String JUHE_MOVIE_VIDEO_KEY = "video";
 
+    public static final String JUHE_JOKE_APP_KEY = "d838e1ee59799f4024a6d316fd833b6c";
+    public static final String JUHE_JOKE_BASE_URL = "http://japi.juhe.cn/joke/";
+    public static final String JUHE_JOKE_JOKE_KEY = "content/text.from";
+    public static final String JUHE_JOKE_JOKE_IMAGE_KEY = "img/text.from";
+
     private MyConstance() {
 
     }

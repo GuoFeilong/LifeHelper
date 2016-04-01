@@ -2,16 +2,24 @@ package com.lifehelper.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.baidu.location.BDLocation;
 import com.lifehelper.R;
 import com.lifehelper.app.MyConstance;
+import com.lifehelper.entity.JokeEntity;
+import com.lifehelper.entity.JokeImgEntity;
 import com.lifehelper.entity.MovieEntity;
-import com.lifehelper.presenter.impl.JuHeMoviePresenterImpl;
+import com.lifehelper.entity.MovieRecentEntity;
+import com.lifehelper.presenter.impl.JuHeJokePresenterImpl;
 import com.lifehelper.tools.Logger;
+import com.lifehelper.tools.T;
 import com.lifehelper.ui.customwidget.LoadingDialog;
+import com.lifehelper.view.JuHeJokeView;
 import com.lifehelper.view.JuHeMovieView;
 
 import butterknife.Bind;
@@ -21,11 +29,17 @@ import butterknife.ButterKnife;
 /**
  * Created by jsion on 16/3/29.
  */
-public class WhoActivity extends BaseActivity implements JuHeMovieView {
+public class WhoActivity extends BaseActivity implements JuHeMovieView, JuHeJokeView {
+    private static final String TAG = "WhoActivity";
     @Bind(R.id.toolbar_who)
     Toolbar mToolbar;
+    @Bind(R.id.rlv_who_joke)
+    RecyclerView mJokeData;
+    @Bind(R.id.srl_load_joke)
+    SwipeRefreshLayout mLoadJoke;
+
     private BDLocation mCurrentBdLocation;
-    private JuHeMoviePresenterImpl mMoviePresenter;
+    private JuHeJokePresenterImpl mJokePresenter;
     private LoadingDialog loadingDialog;
 
     @Override
@@ -38,7 +52,7 @@ public class WhoActivity extends BaseActivity implements JuHeMovieView {
     @Override
     protected void initData() {
         loadingDialog = new LoadingDialog(this, false);
-        mMoviePresenter = new JuHeMoviePresenterImpl(this);
+        mJokePresenter = new JuHeJokePresenterImpl(this);
         getIntentData();
     }
 
@@ -56,8 +70,27 @@ public class WhoActivity extends BaseActivity implements JuHeMovieView {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.mipmap.abc_ic_ab_back_mtrl_am_alpha));
         }
+        mJokeData.setLayoutManager(new LinearLayoutManager(this));
+        mLoadJoke.setColorSchemeColors(getResources().getColor(R.color.skin_background_black)
+                , (getResources().getColor(R.color.skin_colorAccent_Amber))
+                , (getResources().getColor(R.color.skin_colorAccent_blue))
+                , (getResources().getColor(R.color.skin_colorAccent_mred)));
 
-        mMoviePresenter.getSearchMovie(mCurrentBdLocation.getCity(), "灌篮高手");
+        mLoadJoke.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+        });
+        mLoadJoke.post(new Runnable() {
+            @Override
+            public void run() {
+                mLoadJoke.setRefreshing(true);
+            }
+        });
+
+        mJokePresenter.getJokeEntity(1, 20);
+        mJokePresenter.getJokeImgEntity(2, 10);
     }
 
     @Override
@@ -84,18 +117,33 @@ public class WhoActivity extends BaseActivity implements JuHeMovieView {
     }
 
     @Override
+    public void bindJuHeJoke(JokeEntity jokeEntity) {
+        Logger.e(jokeEntity.toString() + "======获取jokeContent全部列表");
+        T.show(this, "joke加载全部列表完成", 0);
+    }
+
+    @Override
+    public void bindJHeJokeImg(JokeImgEntity jokeImgEntity) {
+        Logger.e(jokeImgEntity.toString() + "======获取全部jokeImg列表");
+        T.show(this, "jokeImg加载全部列表完成", 0);
+    }
+
+    @Override
     public void bindJuHeSearchMovie(MovieEntity movieEntity) {
         MovieEntity.ResultBean result = movieEntity.getResult();
         Logger.e(result.getAct() + result.getTitle() + result.getYear());
     }
 
     @Override
-    public void bindJHeRecentMovies() {
-
+    public void bindJHeRecentMovies(MovieRecentEntity movieRecentEntity) {
+        MovieRecentEntity.MovieDataType data = movieRecentEntity.getResult().getData();
+        Logger.e(data + "======获取全部列表");
+        T.show(this, "加载全部列表完成", 0);
     }
 
+
     @Override
-    public void showErrorMessage() {
+    public void showErrorMessage(String error) {
         loadingDialog.dismiss();
     }
 
@@ -103,4 +151,10 @@ public class WhoActivity extends BaseActivity implements JuHeMovieView {
     public void dismissLoading() {
         loadingDialog.dismiss();
     }
+
+    @Override
+    public void completed() {
+        loadingDialog.dismiss();
+    }
+
 }
