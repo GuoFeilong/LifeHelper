@@ -49,7 +49,7 @@ public class WhoActivity extends BaseActivity implements JuHeMovieView, JuHeJoke
     /**
      * each page max count must <= 20 and >= 1
      */
-    private static final int PAG_COUNT_NUM = 2;
+    private static final int PAG_COUNT_NUM = 10;
     @Bind(R.id.toolbar_who)
     Toolbar mToolbar;
     @Bind(R.id.rlv_who_joke)

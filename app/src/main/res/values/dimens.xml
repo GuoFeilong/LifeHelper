@@ -20,4 +20,5 @@
     <dimen name="et_height">40dp</dimen>
     <dimen name="bus_result_item_height">65dp</dimen>
     <dimen name="bus_result_icon_size">16dp</dimen>
+    <dimen name="app_name_size">25sp</dimen>
 </resources>
