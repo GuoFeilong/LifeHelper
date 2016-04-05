@@ -23,4 +23,5 @@
     <string name="clear_route_line_history">清除历史记录</string>
     <string name="distance">距离 :</string>
     <string name="m_unit">米</string>
+    <string name="joke_change">切换</string>
 </resources>

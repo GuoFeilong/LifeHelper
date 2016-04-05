@@ -10,6 +10,7 @@ public class JokeImgEntity {
     private int error_code;
     private String reason;
     private ResultBean result;
+    private int jokeType;
 
     public int getError_code() {
         return error_code;
@@ -35,6 +36,14 @@ public class JokeImgEntity {
         this.result = result;
     }
 
+    public int getJokeType() {
+        return jokeType;
+    }
+
+    public void setJokeType(int jokeType) {
+        this.jokeType = jokeType;
+    }
+
     public static class ResultBean {
 
         private List<DataBean> data;
@@ -46,6 +55,7 @@ public class JokeImgEntity {
         public void setData(List<DataBean> data) {
             this.data = data;
         }
+
 
         public static class DataBean {
             private String content;

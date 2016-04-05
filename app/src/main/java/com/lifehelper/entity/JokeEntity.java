@@ -9,6 +9,15 @@ public class JokeEntity {
     private int error_code;
     private String reason;
     private ResultBean result;
+    private int jokeType;
+
+    public int getJokeType() {
+        return jokeType;
+    }
+
+    public void setJokeType(int jokeType) {
+        this.jokeType = jokeType;
+    }
 
     public int getError_code() {
         return error_code;

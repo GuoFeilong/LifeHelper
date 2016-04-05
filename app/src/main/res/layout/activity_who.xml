@@ -36,9 +36,10 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:paddingRight="@dimen/activity_vertical_margin"
-                    android:text="@string/route_line_search"
+                    android:text="@string/joke_change"
                     android:textColor="@color/skin_appbar_white"
-                    android:textSize="@dimen/comment_text_size_middle" />
+                    android:textSize="@dimen/comment_text_size_middle"
+                    android:textStyle="italic|bold" />
             </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
@@ -55,6 +56,7 @@
             android:id="@+id/rlv_who_joke"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="true"
             android:overScrollMode="never"
             android:scrollbars="none">
 
