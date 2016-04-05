@@ -27,7 +27,7 @@ import com.lifehelper.presenter.impl.GreenDaoPresenterImpl;
 import com.lifehelper.presenter.impl.RouteLinePresenterImpl;
 import com.lifehelper.tools.T;
 import com.lifehelper.tools.ViewUtils;
-import com.lifehelper.ui.fragment.ResultLineBusFragment;
+import com.lifehelper.ui.fragment.ResultLineFragment;
 import com.lifehelper.ui.fragment.RouteLineLocationFragment;
 import com.lifehelper.view.GreenDaoView;
 import com.lifehelper.view.RouteLineTabView;
@@ -51,7 +51,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
 
     private GreenDaoPresenterImpl mGreenDaoPresenter;
     private RouteLinePresenterImpl mPresenter;
-    private ResultLineBusFragment mResultLineBusFragment;
+    private ResultLineFragment mResultLineFragment;
     private RouteLineLocationFragment mRouteLineLocationFragment;
     private int mCurrentTabType;
     private BDLocation mCurrentBDLoation;
@@ -76,11 +76,11 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
             args.putParcelable(MyConstance.ROUTELINE_PLANNOTES, mRoutLinePlanots);
 
             mRoutLinePlanots.setTabType(mCurrentTabType);
-            mResultLineBusFragment.setArguments(args);
+            mResultLineFragment.setArguments(args);
 
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.fl_fragment_container, mResultLineBusFragment);
+            ft.replace(R.id.fl_fragment_container, mResultLineFragment);
             ft.commit();
 
             setDataTable();
@@ -146,7 +146,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
     protected void initView() {
         ButterKnife.bind(this);
         mRouteLineLocationFragment = new RouteLineLocationFragment();
-        mResultLineBusFragment = new ResultLineBusFragment();
+        mResultLineFragment = new ResultLineFragment();
 
         FragmentManager mFM = getFragmentManager();
         FragmentTransaction mFT = mFM.beginTransaction();
@@ -215,7 +215,7 @@ public class RouteLineActivity extends BaseActivity implements RouteLineTabView,
                 public void onTabSelected(TabLayout.Tab tab) {
                     mCurrentTabType = (int) tab.getTag();
                     if (mRouteLineSearch.getVisibility() != View.VISIBLE) {
-                        mResultLineBusFragment.differentRoutePlan(mCurrentTabType);
+                        mResultLineFragment.differentRoutePlan(mCurrentTabType);
                     }
                 }
 

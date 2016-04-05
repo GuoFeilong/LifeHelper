@@ -57,7 +57,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by jsion on 16/3/16.
  */
-public class ResultLineBusFragment extends BaseFragment {
+public class ResultLineFragment extends BaseFragment {
 
     private RoutLinePlanots mRoutLinePlanots;
     private RoutePlanSearch mRroutePlanSearch;

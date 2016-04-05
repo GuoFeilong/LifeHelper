@@ -116,12 +116,9 @@ public class StartActivity extends BaseActivity {
 
                             @Override
                             public void onNext(Long aLong) {
-                                int i = aLong.intValue();
-                                if (i == 0) {
-                                    this.unsubscribe();
-                                    ViewUtils.changeActivity(StartActivity.this, MainActivity.class);
-                                    finish();
-                                }
+                                ViewUtils.changeActivity(StartActivity.this, MainActivity.class);
+                                finish();
+                                this.unsubscribe();
                             }
                         });
             }

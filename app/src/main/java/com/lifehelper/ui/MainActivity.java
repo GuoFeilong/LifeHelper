@@ -213,7 +213,6 @@ public class MainActivity extends BaseActivity implements BaiduMap.OnMapStatusCh
             public void onRecylerItemClick(int clickType) {
                 drawerOpenOrClose();
                 if (clickType == NAV_MENU_CLICK._WHO) {
-//                    ViewUtils.changeActivity(MainActivity.this, AAATestActiviy.class, mCurrentBDLocation);
                     ViewUtils.changeActivity(MainActivity.this, WhoActivity.class, mCurrentBDLocation);
                 } else {
                     showNavDetailPop(clickType);

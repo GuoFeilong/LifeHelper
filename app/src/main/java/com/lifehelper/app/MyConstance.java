@@ -11,12 +11,14 @@ public class MyConstance {
     public static final String BOTTOM_SHEET_DESC = "BOTTOM_SHEET_DESC";
     public static final String CURRENT_POI_LOCATION = "CURRENT_POI_LOCATION";
 
-    public static final String JUHE_APP_KEY = "30c349c8d0b5d2c2650216ef28e461e1";
+    // TODO: 废弃的接口可以忽略
+    public static final String JUHE_APP_KEY = "This interface do not used!!!!You can ignore ";
     public static final String JUHE_MOVIE_BASE_URL = "http://op.juhe.cn/onebox/movie/";
     public static final String JUHE_MOVIE_PMOVIE_KEY = "pmovie";
     public static final String JUHE_MOVIE_VIDEO_KEY = "video";
 
-    public static final String JUHE_JOKE_APP_KEY = "d838e1ee59799f4024a6d316fd833b6c";
+    // TODO:  https://www.juhe.cn/docs/api/id/95/aid/281 聚合数据key申请地址
+    public static final String JUHE_JOKE_APP_KEY = "输入你申请的聚合数据key";
     public static final String JUHE_JOKE_BASE_URL = "http://japi.juhe.cn/joke/";
     public static final String JUHE_JOKE_JOKE_KEY = "content/text.from";
     public static final String JUHE_JOKE_JOKE_IMAGE_KEY = "img/text.from";

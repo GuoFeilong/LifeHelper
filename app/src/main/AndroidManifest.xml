@@ -66,11 +66,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".ui.AAATestActiviy"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-
 
         <service
             android:name="com.baidu.location.f"
@@ -79,7 +74,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Nfir7RDXVeL2Xwm7f7btY8sI" />
+            android:value="输入您注册的百度地图开发者key" />
 
     </application>
 

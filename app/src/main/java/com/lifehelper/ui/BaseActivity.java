@@ -4,9 +4,6 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.lifehelper.app.LifeApplication;
-import com.squareup.leakcanary.RefWatcher;
-
 /**
  * Created by jsion on 16/3/9.
  */
@@ -19,8 +16,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         /**
          * init LeakCanary watch memory leak in activity
          */
-        RefWatcher refWatcher = LifeApplication.getRefWatcher(this);
-        refWatcher.watch(this);
+//        RefWatcher refWatcher = LifeApplication.getRefWatcher(this);
+//        refWatcher.watch(this);
     }
 
     /**

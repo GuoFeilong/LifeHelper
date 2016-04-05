@@ -6,7 +6,6 @@ import android.content.Context;
 import com.baidu.mapapi.SDKInitializer;
 import com.lifehelper.DaoMaster;
 import com.lifehelper.DaoSession;
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 /**
@@ -25,7 +24,7 @@ public class LifeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         SDKInitializer.initialize(getApplicationContext());
-        refWatcher = LeakCanary.install(this);
+//        refWatcher = LeakCanary.install(this);
     }
 
     public static DaoMaster getDaoMaster(Context context) {
